@@ -1,0 +1,80 @@
+{
+  "name": "react-ts-boilerplate",
+  "version": "0.2.0",
+  "private": true,
+  "dependencies": {
+    "@ant-design/plots": "^1.2.5",
+    "@ant-design/pro-components": "^2.6.5",
+    "@hookform/resolvers": "^3.1.1",
+    "@tanstack/react-query": "^5.8.4",
+    "@testing-library/jest-dom": "^5.16.5",
+    "@testing-library/react": "^13.4.0",
+    "@testing-library/user-event": "^13.5.0",
+    "@types/jest": "^27.5.2",
+    "@types/js-cookie": "^3.0.3",
+    "@types/node": "^16.18.38",
+    "@types/react": "^18.2.14",
+    "@types/react-dom": "^18.2.6",
+    "antd": "^5.11.1",
+    "axios": "^1.4.0",
+    "cross-env": "^7.0.3",
+    "dotenv": "^16.3.1",
+    "env-cmd": "^10.1.0",
+    "eslint-config-prettier": "^9.0.0",
+    "eslint-plugin-prettier": "^5.0.0",
+    "eslint-plugin-react-hooks": "^4.6.0",
+    "i18next": "^23.2.11",
+    "i18next-browser-languagedetector": "^7.1.0",
+    "js-cookie": "^3.0.5",
+    "moment": "^2.29.4",
+    "prettier": "^3.0.3",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-hook-form": "^7.45.2",
+    "react-i18next": "^13.0.2",
+    "react-icons": "^4.10.1",
+    "react-router-dom": "^6.14.1",
+    "react-scripts": "5.0.1",
+    "typescript": "^4.9.5",
+    "web-vitals": "^2.1.4",
+    "zod": "^3.21.4"
+  },
+  "scripts": {
+    "start": "cross-env -f /tmp/.env react-scripts start",
+    "dev": "cross-env NODE_ENV=development react-scripts start",
+    "start:prod": "cross-env NODE_ENV=production react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject",
+    "lint": "eslint ./src",
+    "lint:fix": "eslint --fix --ext .ts,.tsx ./src",
+    "format": "prettier --write 'src/**/*.{js,jsx,ts,tsx,css,md,json}' --config ./.prettierrc"
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ],
+    "rules": {
+      "@typescript-eslint/no-unused-vars": "off"
+    }
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^8.6.0",
+    "@typescript-eslint/parser": "^8.6.0",
+    "eslint": "^9.11.0",
+    "eslint-plugin-react": "^7.33.2"
+  }
+}
