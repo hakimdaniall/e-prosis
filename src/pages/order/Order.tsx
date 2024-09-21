@@ -65,6 +65,8 @@ const Order = () => {
       setIsRatingModalOpen(false);
     } catch (error) {
       console.error("Failed to rate order:", error);
+      message.error("Failed to rate order")
+      setConfirmLoading(false);
     }
   };
 
