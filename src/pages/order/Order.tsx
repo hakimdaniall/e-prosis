@@ -1,11 +1,13 @@
 import { useState } from "react";
-import { Button, Card, Form, message, Modal, Rate } from "antd";
+import { Button, Card, Input, message, Modal, Rate } from "antd";
 import { ProTable, ProColumns } from "@ant-design/pro-components";
 import axios, { AxiosResponse } from "axios";
 import { IProduct, IAPIResponseProducts } from "../products/type/ProductType";
 import { updateProduct, getProductsList } from "../products/api/ProductAPI";
 import Stepper from "./Stepper/Stepper";
 import { getProductDetails, rateOrder } from "./api/OrderAPI";
+
+const { TextArea } = Input;
 
 const Order = () => {
     const [currentStep, setCurrentStep] = useState(4);
@@ -26,6 +28,7 @@ const Order = () => {
   const [ratingValue, setRatingValue] = useState(3);
   const [currentProduct, setCurrentProduct] = useState<IProduct | null>(null); // Initial state as null
   const [confirmLoading, setConfirmLoading] = useState(false);
+  const [comment, setComment] = useState("");
 
 
   const showModal = (record: any) => {
@@ -54,7 +57,7 @@ const Order = () => {
     setConfirmLoading(true);
     const payload = {
       rating: ratingValue,
-      comment: "TESTTT",
+      comment: comment,
     };
   
     try {
@@ -209,9 +212,23 @@ const Order = () => {
           onCancel={handleCancelRateOrder}
           confirmLoading={confirmLoading}
         >
-          <div style={{ paddingTop: 20 }}>
-            {currentProduct && <h3>{currentProduct.title}</h3>}
-            <Rate onChange={setRatingValue} value={ratingValue} />
+          <div style={{ marginTop: 20 }}>
+            <h4>How would you rate your experience?</h4>
+            <Rate
+              onChange={setRatingValue}
+              value={ratingValue}
+              tooltips={["Poor", "Fair", "Good", "Very Good", "Excellent"]}
+            />
+          </div>
+
+          <div style={{ marginTop: 20 }}>
+            <h4>Leave a comment</h4>
+            <TextArea
+              rows={4}
+              placeholder="Share more about your experience..."
+              value={comment}
+              onChange={(e) => setComment(e.target.value)}
+            />
           </div>
         </Modal>
 
