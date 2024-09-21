@@ -25,7 +25,7 @@ const Order = () => {
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isRatingModalOpen, setIsRatingModalOpen] = useState(false);
-  const [ratingValue, setRatingValue] = useState(3);
+  const [ratingValue, setRatingValue] = useState(5);
   const [currentProduct, setCurrentProduct] = useState<IProduct | null>(null); // Initial state as null
   const [confirmLoading, setConfirmLoading] = useState(false);
   const [comment, setComment] = useState("");
@@ -46,11 +46,12 @@ const Order = () => {
   };
 
   const showRatingModal = async (record: any) => {
-    const response = await getProductDetails(record.id)
+    const response = await getProductDetails(record.id);
     const productData = response.data;
-    console.log('productData', productData)
-    setCurrentProduct(productData)
-    setIsRatingModalOpen(true)
+    setCurrentProduct(productData);
+    setIsRatingModalOpen(true);
+    setComment("");
+    setRatingValue(5);
   }
 
   const handleRateOrder = async () => {
@@ -63,7 +64,7 @@ const Order = () => {
     try {
       const response = await rateOrder(payload);
       console.log("Response:", response);
-      message.success("Successfully rate")
+      message.success("Successfully Rate Order")
       setConfirmLoading(false);
       setIsRatingModalOpen(false);
     } catch (error) {
@@ -212,7 +213,9 @@ const Order = () => {
           onCancel={handleCancelRateOrder}
           confirmLoading={confirmLoading}
         >
-          <div style={{ marginTop: 20 }}>
+
+          <h3>{currentProduct ? currentProduct.title : null}</h3>
+          <div>
             <h4>How would you rate your experience?</h4>
             <Rate
               onChange={setRatingValue}
