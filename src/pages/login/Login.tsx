@@ -38,7 +38,13 @@ const LoginPage = () => {
       },
       user: "admin",
     });
-    setUser === true ? navigate(0) : alert("error");
+    
+    if (setUser === true) {
+      navigate(0);
+    } else {
+      alert("error");
+    }
+    
 
     // Perform form submission logic here
 
