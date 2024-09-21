@@ -157,6 +157,7 @@ const Order = () => {
   return (
     <Card title="Products Listing" style={{ margin: 10 }}>
       <ProTable
+        search={false}
         cardBordered
         request={async (params, sort, filter) => {
           try {
@@ -188,7 +189,7 @@ const Order = () => {
             await waitTime(2000);
           },
         }}
-    />
+      />
         <Modal
             title="Track Order"
             open={isModalOpen}
