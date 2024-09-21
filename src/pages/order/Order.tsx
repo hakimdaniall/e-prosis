@@ -1,13 +1,14 @@
 import { useState } from "react";
-import { Button, Card, Form, Modal } from "antd";
+import { Button, Card, Form, message, Modal, Rate } from "antd";
 import { ProTable, ProColumns } from "@ant-design/pro-components";
 import axios, { AxiosResponse } from "axios";
 import { IProduct, IAPIResponseProducts } from "../products/type/ProductType";
 import { updateProduct, getProductsList } from "../products/api/ProductAPI";
 import Stepper from "./Stepper/Stepper";
+import { getProductDetails, rateOrder } from "./api/OrderAPI";
 
 const Order = () => {
-    const [currentStep, setCurrentStep] = useState(3);
+    const [currentStep, setCurrentStep] = useState(4);
     const waitTimePromise = async (time: number = 100) => {
     return new Promise((resolve) => {
       setTimeout(() => {
@@ -21,63 +22,67 @@ const Order = () => {
   };
 
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isRatingModalOpen, setIsRatingModalOpen] = useState(false);
+  const [ratingValue, setRatingValue] = useState(3);
+  const [currentProduct, setCurrentProduct] = useState<IProduct | null>(null); // Initial state as null
+  const [confirmLoading, setConfirmLoading] = useState(false);
 
-  const showModal = () => {
+
+  const showModal = (record: any) => {
+    console.log(record.title, 'stock is', record.stock)
     setIsModalOpen(true);
   };
 
   const handleOk = () => {
     setIsModalOpen(false);
+    message.success("Success");
   };
 
   const handleCancel = () => {
     setIsModalOpen(false);
   };
 
-  const valueCategory = {
-    all: { text: "Default", status: "Default" },
-    laptop: { text: "Laptops", status: "Laptops" },
-    smartphones: { text: "Smartphones", status: "Smartphones" },
-    groceries: { text: "Groceries", status: "Groceries" },
+  const showRatingModal = async (record: any) => {
+    const response = await getProductDetails(record.id)
+    const productData = response.data;
+    console.log('productData', productData)
+    setCurrentProduct(productData)
+    setIsRatingModalOpen(true)
+  }
+
+  const handleRateOrder = async () => {
+    setConfirmLoading(true);
+    const payload = {
+      rating: ratingValue,
+      comment: "TESTTT",
+    };
+  
+    try {
+      const response = await rateOrder(payload);
+      console.log("Response:", response);
+      message.success("Successfully rate")
+      setConfirmLoading(false);
+      setIsRatingModalOpen(false);
+    } catch (error) {
+      console.error("Failed to rate order:", error);
+    }
   };
 
-  const valueBrand = {
-    all: { text: "Default", status: "Default" },
-    samsung: { text: "Samsung", status: "Samsung" },
-    apple: { text: "Apple", status: "Apple" },
-  };
+  const handleCancelRateOrder = () => {
+    setIsRatingModalOpen(false)
+  }
 
   const columns: ProColumns<IProduct>[] = [
     {
-      title: "Index",
-      dataIndex: "index",
+      title: "No",
+      dataIndex: "no",
       valueType: "index",
-      width: 80,
+      width: 50,
     },
     {
       title: "Title",
       dataIndex: "title",
       key: "title",
-      filters: [
-        {
-          text: "iPhone",
-          value: "iPhone",
-        },
-        {
-          text: "Samsung",
-          value: "Samsung",
-        },
-      ],
-      filterMode: "tree",
-      filterSearch: true,
-      formItemProps: (form, { rowIndex }) => {
-        return {
-          rules: [
-            { required: true, message: "This item is required" },
-            { min: 5, message: "need more than 5 chars" },
-          ],
-        };
-      },
     },
 
     {
@@ -102,28 +107,19 @@ const Order = () => {
       key: "price",
       render: (price) => <p>${price}</p>,
       align: "right",
-      // defaultSortOrder: "descend",
-      valueType: "digit",
       width: "10%",
-      sorter: (a, b) => a.price - b.price,
     },
     {
       title: "Category",
       dataIndex: "category",
       key: "category",
       responsive: ["lg"],
-      sorter: (a, b) => a.category.localeCompare(b.category),
-      valueType: "cascader",
-      valueEnum: valueCategory,
     },
     {
       title: "Brand",
       dataIndex: "brand",
       key: "brand",
       responsive: ["lg"],
-      valueType: "radioButton",
-      initialValue: "all",
-      valueEnum: valueBrand,
     },
     {
       title: "Options",
@@ -132,11 +128,22 @@ const Order = () => {
       render: (text, record, _, action) => [
         <Button 
             type="primary" 
-            onClick={showModal}
+            onClick={() => showModal(record)}
             key="viewStatus"
         >
            Track Order
         </Button>,
+
+        record.id === 4 && (
+            <Button 
+                type="primary" 
+                onClick={() => showRatingModal(record)}
+                key="rate"
+            >
+            Rate
+            </Button>
+        ),
+        
       ],
     },
   ];
@@ -186,17 +193,24 @@ const Order = () => {
                     Terima
                 </Button>
                 ),
-
-                currentStep === 4 && (
-                <Button key="rate" type="primary" onClick={handleOk}>
-                    Rate
-                </Button>
-                ),
             ]}
             >
             <div style={{ paddingTop: 20 }}>
                 <Stepper current={currentStep} setCurrent={setCurrentStep} />
             </div>
+        </Modal>
+
+        <Modal 
+          title="Rate Order" 
+          open={isRatingModalOpen} 
+          onOk={handleRateOrder} 
+          onCancel={handleCancelRateOrder}
+          confirmLoading={confirmLoading}
+        >
+          <div style={{ paddingTop: 20 }}>
+            {currentProduct && <h3>{currentProduct.title}</h3>}
+            <Rate onChange={setRatingValue} value={ratingValue} />
+          </div>
         </Modal>
 
     </Card>

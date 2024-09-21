@@ -29,7 +29,7 @@ root.render(
 
         Layout: {
           //header theme
-          colorBgHeader: "white",
+          headerBg: "white",
           colorText: "#6C6C6C",
         },
         Menu: {
