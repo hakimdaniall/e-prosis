@@ -10,6 +10,33 @@ import { getProductDetails, rateOrder } from "./api/OrderAPI";
 const { TextArea } = Input;
 
 const Order = () => {
+
+    const delivery_steps = [
+      {
+        "step": "shipped",
+        "status": "completed",
+        "timestamp": "2024-09-22T08:00:00Z",
+        "description": "Order has been shipped from the warehouse."
+      },
+      {
+        "step": "in_transit",
+        "status": "completed",
+        "timestamp": "2024-09-23T12:00:00Z",
+        "description": "Order is in transit to the destination."
+      },
+      {
+        "step": "out_for_delivery",
+        "status": "pending",
+        "timestamp": null,
+        "description": "Order is not yet out for delivery."
+      },
+      {
+        "step": "delivered",
+        "status": "pending",
+        "timestamp": null,
+        "description": "Order has not been delivered yet."
+      }
+    ]
     const [currentStep, setCurrentStep] = useState(4);
     const waitTimePromise = async (time: number = 100) => {
     return new Promise((resolve) => {
@@ -25,6 +52,7 @@ const Order = () => {
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isRatingModalOpen, setIsRatingModalOpen] = useState(false);
+  const [isOrderReceivedModal, setIsOrderReceivedModal] = useState(false);
   const [ratingValue, setRatingValue] = useState(5);
   const [currentProduct, setCurrentProduct] = useState<IProduct | null>(null); // Initial state as null
   const [confirmLoading, setConfirmLoading] = useState(false);
@@ -78,6 +106,28 @@ const Order = () => {
     setIsRatingModalOpen(false)
   }
 
+  const showOrderReceivedModal = async (record: any) => {
+    const response = await getProductDetails(record.id);
+    const productData = response.data;
+    setCurrentProduct(productData);
+    setIsOrderReceivedModal(true)
+  }
+
+  const handleOkOrderReceived = () => {
+    console.log('handleOkOrderReceived')
+    setConfirmLoading(true);
+    setTimeout(() => {
+      setIsOrderReceivedModal(false)
+      setConfirmLoading(false);
+      console.log(currentProduct)
+      message.success("Order has been successfully marked as received.");
+    }, 3000);
+  }
+
+  const handleCancelOrderReceivedModal = () => {
+    console.log('handleCancelOrderReceivedModal')
+    setIsOrderReceivedModal(false)
+  }
   const columns: ProColumns<IProduct>[] = [
     {
       title: "No",
@@ -140,7 +190,7 @@ const Order = () => {
            Track Order
         </Button>,
 
-        (currentStep === 5 && record.id === 4) && (
+        (record.current_step === 5 && record.id === 4) && (
             <Button 
                 type="primary" 
                 onClick={() => showRatingModal(record)}
@@ -150,13 +200,13 @@ const Order = () => {
             </Button>
         ),
 
-        (currentStep === 4 && record.id === 4) && (
+        (record.current_step === 4 && record.id === 4) && (
             <Button 
                 type="primary" 
-                onClick={() => showRatingModal(record)}
+                onClick={() => showOrderReceivedModal(record)}
                 key="rate"
             >
-            Terima
+            Confirm Order
             </Button>
         ),
         
@@ -165,14 +215,17 @@ const Order = () => {
   ];
 
   return (
-    <Card title="Products Listing" style={{ margin: 10 }}>
+    <Card title="Order List" style={{ margin: 10 }}>
       <ProTable
         search={false}
         cardBordered
         request={async (params, sort, filter) => {
           try {
             const data = await getProductsList({ filter, sort, params });
-
+            data.products.forEach((el: any) => {
+              el.delivery_steps = delivery_steps
+              el.current_step = 5
+            })
             console.log(data);
 
             return {
@@ -204,10 +257,27 @@ const Order = () => {
             title="Track Order"
             open={isModalOpen}
             onCancel={handleCancel}
+            footer={[
+              <Button key="back" onClick={handleCancel}>
+                Return
+              </Button>,
+            ]}
             >
             <div style={{ paddingTop: 20 }}>
-                <Stepper current={currentStep} setCurrent={setCurrentStep} />
+              <Stepper current={currentStep} setCurrent={setCurrentStep} />
             </div>
+        </Modal>
+
+        <Modal
+          title="Confirm Order Receipt"
+          open={isOrderReceivedModal}
+          onOk={handleOkOrderReceived}
+          confirmLoading={confirmLoading}
+          onCancel={handleCancelOrderReceivedModal}
+        >
+          <p>
+            Please confirm that you have received the order. Once confirmed, this action cannot be undone.
+          </p>
         </Modal>
 
         <Modal 

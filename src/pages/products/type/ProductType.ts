@@ -13,6 +13,8 @@ export const ProductSchema = z.object({
   price: z.number().min(10, { message: "Price must be more than $10" }),
   category: z.string(),
   brand: z.string(),
+  delivery_steps: z.array(z.string()).optional(),
+  current_step: z.number().optional()
 });
 
 export type IProduct = z.infer<typeof ProductSchema>;
