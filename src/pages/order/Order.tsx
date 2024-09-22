@@ -33,18 +33,18 @@ const Order = () => {
       },
       {
         "step": 'Kutipan',
-        "status": "process",
+        "status": "finish",
         "timestamp": null,
         "description": "Tempoh kutipan ialah 1 minggu. Jika tiada kutipan dilakukan, bahan kimia yang dibeli akan dihantar ke stor simpanan."
       },
       {
         "step": 'Selesai',
-        "status": "wait",
+        "status": "finish",
         "timestamp": null,
         "description": "Kutipan selesai"
       }
     ]
-    const [currentStep, setCurrentStep] = useState(4);
+
     const waitTimePromise = async (time: number = 100) => {
     return new Promise((resolve) => {
       setTimeout(() => {
@@ -69,11 +69,6 @@ const Order = () => {
   const showModal = (record: any) => {
     setCurrentProduct(record)
     setIsModalOpen(true);
-  };
-
-  const handleOk = () => {
-    setIsModalOpen(false);
-    message.success("Success");
   };
 
   const handleCancel = () => {
@@ -197,24 +192,24 @@ const Order = () => {
            Track Order
         </Button>,
 
-        (record.current_step === 5 && record.id === 4) && (
-            <Button 
-                type="primary" 
-                onClick={() => showRatingModal(record)}
-                key="rate"
-            >
-            Rate
-            </Button>
+        record.delivery_steps?.find((step: any) => step.step === "Kutipan" && step.status === "process") && (
+          <Button 
+            type="primary" 
+            onClick={() => showOrderReceivedModal(record)}
+            key="confirm"
+          >
+            Confirm Order
+          </Button>
         ),
 
-        (record.current_step === 4 && record.id === 4) && (
-            <Button 
-                type="primary" 
-                onClick={() => showOrderReceivedModal(record)}
-                key="rate"
-            >
-            Confirm Order
-            </Button>
+        record.delivery_steps?.find((step: any) => step.step === "Selesai" && step.status === "finish") && (
+          <Button 
+              type="primary" 
+              onClick={() => showRatingModal(record)}
+              key="rate"
+          >
+          Rate
+          </Button>
         ),
         
       ],
@@ -231,7 +226,6 @@ const Order = () => {
             const data = await getProductsList({ filter, sort, params });
             data.products.forEach((el: any) => {
               el.delivery_steps = delivery_steps
-              el.current_step = 5
             })
             console.log(data);
 
