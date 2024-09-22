@@ -10,31 +10,38 @@ import { getProductDetails, rateOrder } from "./api/OrderAPI";
 const { TextArea } = Input;
 
 const Order = () => {
-
+    
+  // wait process finish error
     const delivery_steps = [
       {
-        "step": "shipped",
-        "status": "completed",
+        "step": 'Ketua Pusat Pengajian IPSIS-FSG',
+        "status": "finish",
         "timestamp": "2024-09-22T08:00:00Z",
-        "description": "Order has been shipped from the warehouse."
+        "description": "3 Hari Bekerja"
       },
       {
-        "step": "in_transit",
-        "status": "completed",
+        "step": 'Pegawai Perolehan',
+        "status": "finish",
         "timestamp": "2024-09-23T12:00:00Z",
-        "description": "Order is in transit to the destination."
+        "description": "5 Hari Bekerja"
       },
       {
-        "step": "out_for_delivery",
-        "status": "pending",
+        "step": 'Pelawaan Vendor',
+        "status": "finish",
         "timestamp": null,
-        "description": "Order is not yet out for delivery."
+        "description": "2 Bulan"
       },
       {
-        "step": "delivered",
-        "status": "pending",
+        "step": 'Kutipan',
+        "status": "process",
         "timestamp": null,
-        "description": "Order has not been delivered yet."
+        "description": "Tempoh kutipan ialah 1 minggu. Jika tiada kutipan dilakukan, bahan kimia yang dibeli akan dihantar ke stor simpanan."
+      },
+      {
+        "step": 'Selesai',
+        "status": "wait",
+        "timestamp": null,
+        "description": "Kutipan selesai"
       }
     ]
     const [currentStep, setCurrentStep] = useState(4);
@@ -60,7 +67,7 @@ const Order = () => {
 
 
   const showModal = (record: any) => {
-    console.log(record.title, 'stock is', record.stock)
+    setCurrentProduct(record)
     setIsModalOpen(true);
   };
 
@@ -264,7 +271,9 @@ const Order = () => {
             ]}
             >
             <div style={{ paddingTop: 20 }}>
-              <Stepper current={currentStep} setCurrent={setCurrentStep} />
+              <Stepper
+                deliverySteps={currentProduct?.delivery_steps || []}
+              />
             </div>
         </Modal>
 
