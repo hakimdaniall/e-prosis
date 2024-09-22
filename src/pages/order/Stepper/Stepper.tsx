@@ -30,7 +30,7 @@ const Stepper = ({ current, setCurrent }: StepperProps) => {
           },
           {
             title: 'Selesai',
-            description: current >= 4 ? 'Kutipan selesai' : null,
+            description: current > 4 ? 'Kutipan selesai' : 'Tiada status',
           },
         ]}
       />

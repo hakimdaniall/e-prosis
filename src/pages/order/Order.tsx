@@ -140,13 +140,23 @@ const Order = () => {
            Track Order
         </Button>,
 
-        record.id === 4 && (
+        (currentStep === 5 && record.id === 4) && (
             <Button 
                 type="primary" 
                 onClick={() => showRatingModal(record)}
                 key="rate"
             >
             Rate
+            </Button>
+        ),
+
+        (currentStep === 4 && record.id === 4) && (
+            <Button 
+                type="primary" 
+                onClick={() => showRatingModal(record)}
+                key="rate"
+            >
+            Terima
             </Button>
         ),
         
@@ -194,13 +204,6 @@ const Order = () => {
             title="Track Order"
             open={isModalOpen}
             onCancel={handleCancel}
-            footer={[
-                currentStep === 3 && (
-                <Button key="submit" type="primary" onClick={handleOk}>
-                    Terima
-                </Button>
-                ),
-            ]}
             >
             <div style={{ paddingTop: 20 }}>
                 <Stepper current={currentStep} setCurrent={setCurrentStep} />
