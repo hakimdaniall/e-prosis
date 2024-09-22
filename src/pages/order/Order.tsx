@@ -33,15 +33,18 @@ const Order = () => {
       },
       {
         "step": 'Kutipan',
+        // "status": "process",
         "status": "finish",
         "timestamp": null,
-        "description": "Tempoh kutipan ialah 1 minggu. Jika tiada kutipan dilakukan, bahan kimia yang dibeli akan dihantar ke stor simpanan."
+        // "description": "Tempoh kutipan ialah 1 minggu. Jika tiada kutipan dilakukan, bahan kimia yang dibeli akan dihantar ke stor simpanan."
+        "description": null
       },
       {
         "step": 'Selesai',
-        "status": "finish",
+        "status": null,
         "timestamp": null,
-        "description": "Kutipan selesai"
+        // "description": "Kutipan selesai"
+        "description": null
       }
     ]
 

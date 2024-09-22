@@ -14,7 +14,7 @@ const Stepper = ({ deliverySteps }: StepperProps) => {
           title: step.step,
           description: (
             <>
-              <p style={{ margin: 0 }}>{step.description}</p>
+              <p style={{ margin: 0 }}>{ step.description ?? 'Tiada Status' }</p>
               {/* {step.timestamp && (
                 <p style={{ color: 'gray' }}>
                   {moment(step.timestamp).format('YYYY-MM-DD HH:mm:ss')}
