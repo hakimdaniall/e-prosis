@@ -67,38 +67,43 @@ const Order = () => {
   const [ratingValue, setRatingValue] = useState(5);
   const [currentProduct, setCurrentProduct] = useState<IProduct | null>(null); // Initial state as null
   const [confirmLoading, setConfirmLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [comment, setComment] = useState("");
 
 
   const showModal = (record: any) => {
     setCurrentProduct(record)
     setIsModalOpen(true);
-    setConfirmLoading(true)
+    setIsLoading(true)
     setTimeout(() => {
-      setConfirmLoading(false)
+      setIsLoading(false)
     }, 3000)
   };
 
   const showFormModal = (src: string) => {
     console.log(src)
     setIsFormModalOpen(true);
-    setConfirmLoading(true)
+    setIsLoading(true)
     setTimeout(() => {
-      setConfirmLoading(false)
+      setIsLoading(false)
     }, 3000)
   };
 
-  const handleCancel = () => {
-    setIsModalOpen(false);
-  };
-
   const showRatingModal = async (record: any) => {
-    const response = await getProductDetails(record.id);
-    const productData = response.data;
-    setCurrentProduct(productData);
+    setIsLoading(true);
     setIsRatingModalOpen(true);
-    setComment("");
-    setRatingValue(5);
+    
+    try {
+        const response = await getProductDetails(record.id);
+        const productData = response.data;
+        setCurrentProduct(productData);
+        setRatingValue(5);
+        setComment("");
+        setIsLoading(false);
+    } catch (error) {
+        console.error("Error fetching product details:", error);
+    }
+    
   }
 
   const handleRateOrder = async () => {
@@ -121,15 +126,20 @@ const Order = () => {
     }
   };
 
-  const handleCancelRateOrder = () => {
-    setIsRatingModalOpen(false)
-  }
-
   const showOrderReceivedModal = async (record: any) => {
-    const response = await getProductDetails(record.id);
-    const productData = response.data;
-    setCurrentProduct(productData);
+
+    setIsLoading(true);
     setIsOrderReceivedModal(true)
+    
+    try {
+      const response = await getProductDetails(record.id);
+      const productData = response.data;
+      setCurrentProduct(productData);
+      setIsLoading(false)
+    } catch (error) {
+      console.error("Error fetching product details:", error);
+    }
+      
   }
 
   const handleOkOrderReceived = () => {
@@ -143,10 +153,6 @@ const Order = () => {
     }, 3000);
   }
 
-  const handleCancelOrderReceivedModal = () => {
-    console.log('handleCancelOrderReceivedModal')
-    setIsOrderReceivedModal(false)
-  }
   const columns: ProColumns<IProduct>[] = [
     {
       title: "No",
@@ -277,7 +283,7 @@ const Order = () => {
       />
         <Modal
           title="View Form"
-          loading={confirmLoading}
+          loading={isLoading}
           open={isFormModalOpen}
           onCancel={() => setIsFormModalOpen(false)}
           footer={[
@@ -300,10 +306,10 @@ const Order = () => {
         <Modal
             title="Track Order"
             open={isModalOpen}
-            loading={confirmLoading}
-            onCancel={handleCancel}
+            loading={isLoading}
+            onCancel={() => setIsModalOpen(false)}
             footer={[
-              <Button key="back" onClick={handleCancel}>
+              <Button key="back" onClick={() => setIsModalOpen(false)}>
                 Return
               </Button>,
             ]}
@@ -320,7 +326,8 @@ const Order = () => {
           open={isOrderReceivedModal}
           onOk={handleOkOrderReceived}
           confirmLoading={confirmLoading}
-          onCancel={handleCancelOrderReceivedModal}
+          loading={isLoading}
+          onCancel={() => setIsOrderReceivedModal(false)}
         >
           <p>
             Please confirm that you have received the order. Once confirmed, this action cannot be undone.
@@ -331,8 +338,9 @@ const Order = () => {
           title="Rate Order" 
           open={isRatingModalOpen} 
           onOk={handleRateOrder} 
-          onCancel={handleCancelRateOrder}
+          onCancel={() => setIsRatingModalOpen(false)}
           confirmLoading={confirmLoading}
+          loading={isLoading}
         >
 
           <h3>{currentProduct ? currentProduct.title : null}</h3>
