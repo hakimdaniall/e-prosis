@@ -61,6 +61,7 @@ const Order = () => {
   };
 
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isFormModalOpen, setIsFormModalOpen] = useState(false);
   const [isRatingModalOpen, setIsRatingModalOpen] = useState(false);
   const [isOrderReceivedModal, setIsOrderReceivedModal] = useState(false);
   const [ratingValue, setRatingValue] = useState(5);
@@ -72,6 +73,19 @@ const Order = () => {
   const showModal = (record: any) => {
     setCurrentProduct(record)
     setIsModalOpen(true);
+    setConfirmLoading(true)
+    setTimeout(() => {
+      setConfirmLoading(false)
+    }, 3000)
+  };
+
+  const showFormModal = (src: string) => {
+    console.log(src)
+    setIsFormModalOpen(true);
+    setConfirmLoading(true)
+    setTimeout(() => {
+      setConfirmLoading(false)
+    }, 3000)
   };
 
   const handleCancel = () => {
@@ -189,31 +203,35 @@ const Order = () => {
       render: (text, record, _, action) => [
         <Button 
             type="primary" 
+            onClick={() => showFormModal('record')}
+            key="viewForm"
+        >
+           View Form
+        </Button>,
+
+        <Button 
+            type="primary" 
             onClick={() => showModal(record)}
             key="viewStatus"
         >
            Track Order
         </Button>,
 
-        record.delivery_steps?.find((step: any) => step.step === "Kutipan" && step.status === "process") && (
-          <Button 
-            type="primary" 
-            onClick={() => showOrderReceivedModal(record)}
-            key="confirm"
-          >
-            Confirm Order
-          </Button>
-        ),
+        <Button 
+          type="primary" 
+          onClick={() => showOrderReceivedModal(record)}
+          key="confirm"
+        >
+          Confirm Order
+        </Button>,
 
-        record.delivery_steps?.find((step: any) => step.step === "Selesai" && step.status === "finish") && (
-          <Button 
-              type="primary" 
-              onClick={() => showRatingModal(record)}
-              key="rate"
-          >
-          Rate
-          </Button>
-        ),
+        <Button 
+            type="primary" 
+            onClick={() => showRatingModal(record)}
+            key="rate"
+        >
+        Rate
+        </Button>,
         
       ],
     },
@@ -258,8 +276,31 @@ const Order = () => {
         }}
       />
         <Modal
+          title="View Form"
+          loading={confirmLoading}
+          open={isFormModalOpen}
+          onCancel={() => setIsFormModalOpen(false)}
+          footer={[
+            <Button 
+            key="back" 
+            onClick={() => setIsFormModalOpen(false)}
+            >
+              Return
+            </Button>,
+          ]}
+          width={890}
+        >
+          <iframe 
+            src="https://pii.or.id/uploads/dummies.pdf" 
+            width={100}
+            style={{ width: '100%', height: '500px'}}
+          ></iframe>
+        </Modal>
+
+        <Modal
             title="Track Order"
             open={isModalOpen}
+            loading={confirmLoading}
             onCancel={handleCancel}
             footer={[
               <Button key="back" onClick={handleCancel}>
