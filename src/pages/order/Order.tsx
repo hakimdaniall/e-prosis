@@ -165,43 +165,6 @@ const Order = () => {
       dataIndex: "title",
       key: "title",
     },
-
-    {
-      title: "Thumbnail",
-      dataIndex: "images",
-      key: "Image",
-      render: (imageUrls, entity) => (
-        <img
-          src={entity.images ? entity.images[0] : ""}
-          alt="Product"
-          style={{ width: "50px", height: "50px" }}
-        />
-      ),
-      align: "center",
-      responsive: ["lg"],
-      editable: false,
-      hideInSearch: true,
-    },
-    {
-      title: "Price",
-      dataIndex: "price",
-      key: "price",
-      render: (price) => <p>${price}</p>,
-      align: "right",
-      width: "10%",
-    },
-    {
-      title: "Category",
-      dataIndex: "category",
-      key: "category",
-      responsive: ["lg"],
-    },
-    {
-      title: "Brand",
-      dataIndex: "brand",
-      key: "brand",
-      responsive: ["lg"],
-    },
     {
       title: "Options",
       valueType: "option",
