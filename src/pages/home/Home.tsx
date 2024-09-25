@@ -11,7 +11,6 @@ const ChemicalInventory = () => {
 
   return (
     <div>
-      <h2>Chemical Inventory</h2>
       <Table
         dataSource={chemicalData}
         columns={[
@@ -39,11 +38,19 @@ const ProcedureFlowchart = () => {
 
   return (
     <div>
-      <h2>Procedure (Flowchart)</h2>
+      <p>This flowchart outlines the standard operating procedure for handling key processes.</p>
+      <p>Follow the steps in the document to ensure compliance and accuracy in your workflow.</p>
       <Button type="primary" onClick={showModal}>
         View Flowchart PDF
       </Button>
-      <Modal title="Procedure Flowchart" visible={isModalVisible} onCancel={handleCancel} footer={null} width={800}>
+
+      <Modal 
+        title="Procedure Flowchart" 
+        visible={isModalVisible} 
+        onCancel={handleCancel} 
+        footer={null} 
+        width={800}
+      >
         <iframe 
           src="https://example.com/flowchart.pdf" 
           width="100%" 
@@ -69,11 +76,11 @@ const PurchaseForm = () => {
 
   return (
     <div>
-      <h2>Purchase Form (Order Form)</h2>
       <Button type="primary" onClick={downloadForm}>
         Download Purchase Form
       </Button>
       <List
+        style={{ marginTop: 20 }}
         header={<div>Terms and Conditions</div>}
         bordered
         dataSource={terms}
@@ -84,41 +91,47 @@ const PurchaseForm = () => {
 };
 
 
-
 const Home = () => {
   return (
-    <div style={{ padding: '20px' }}>
-      <Row gutter={[16, 16]}>
-        <Col xs={24} xl={8}>
+    <div style={{ padding: 20, height: '100%', paddingBottom: 35 }}>
+      <Row 
+        gutter={[16, 16]} 
+        style={{ height: '100%' }} 
+        justify="space-between"
+      >
+        <Col xs={24} lg={12} style={{ height: '50%' }}>
           <Card 
             title="Inventory" 
-            hoverable 
-            style={{ minHeight: '300px' }} 
-            bodyStyle={{ padding: '20px' }}
+            style={{ height: '100%' }} 
           >
             <ChemicalInventory />
           </Card>
         </Col>
 
-        <Col xs={24} xl={8}>
+        <Col xs={24} lg={12} style={{ height: '50%' }}>
           <Card 
             title="Procedure" 
-            hoverable 
-            style={{ minHeight: '300px' }} 
-            bodyStyle={{ padding: '20px' }}
+            style={{ height: '100%' }} 
           >
             <ProcedureFlowchart />
           </Card>
         </Col>
 
-        <Col xs={24} xl={8}>
+        <Col xs={24} lg={12} style={{ height: '50%' }}>
           <Card 
             title="Purchase Form" 
-            hoverable 
-            style={{ minHeight: '300px' }} 
-            bodyStyle={{ padding: '20px' }}
+            style={{ height: '100%' }} 
           >
             <PurchaseForm />
+          </Card>
+        </Col>
+        
+        <Col xs={24} lg={12} style={{ height: '50%' }}>
+          <Card 
+            title="Upload" 
+            style={{ height: '100%' }} 
+          >
+            Upload
           </Card>
         </Col>
       </Row>
