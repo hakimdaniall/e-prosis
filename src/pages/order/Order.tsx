@@ -6,6 +6,7 @@ import { IProduct, IAPIResponseProducts } from "../products/type/ProductType";
 import { updateProduct, getProductsList } from "../products/api/ProductAPI";
 import Stepper from "./Stepper/Stepper";
 import { getProductDetails, rateOrder } from "./api/OrderAPI";
+import orderData from "../../mockData";
 
 const { TextArea } = Input;
 
@@ -77,7 +78,7 @@ const Order = () => {
     setIsLoading(true)
     setTimeout(() => {
       setIsLoading(false)
-    }, 3000)
+    }, 1000)
   };
 
   const showFormModal = (src: string) => {
@@ -86,7 +87,7 @@ const Order = () => {
     setIsLoading(true)
     setTimeout(() => {
       setIsLoading(false)
-    }, 3000)
+    }, 1000)
   };
 
   const showRatingModal = async (record: any) => {
@@ -153,7 +154,7 @@ const Order = () => {
     }, 3000);
   }
 
-  const columns: ProColumns<IProduct>[] = [
+  const columns: ProColumns<any>[] = [
     {
       title: "No",
       dataIndex: "no",
@@ -214,13 +215,10 @@ const Order = () => {
         request={async (params, sort, filter) => {
           try {
             const data = await getProductsList({ filter, sort, params });
-            data.products.forEach((el: any) => {
-              el.delivery_steps = delivery_steps
-            })
-            console.log(data);
 
             return {
-              data: data.products,
+              // data: data.products,
+              data: orderData,
               success: true,
               total: data.total,
             };
@@ -249,20 +247,13 @@ const Order = () => {
           loading={isLoading}
           open={isFormModalOpen}
           onCancel={() => setIsFormModalOpen(false)}
-          footer={[
-            <Button 
-            key="back" 
-            onClick={() => setIsFormModalOpen(false)}
-            >
-              Return
-            </Button>,
-          ]}
+          footer={[]}
           width={890}
         >
           <iframe 
             src="https://pii.or.id/uploads/dummies.pdf" 
             width={100}
-            style={{ width: '100%', height: '500px'}}
+            style={{ width: '100%', height: '100vh', maxHeight: 700 }}
           ></iframe>
         </Modal>
 
@@ -271,11 +262,7 @@ const Order = () => {
             open={isModalOpen}
             loading={isLoading}
             onCancel={() => setIsModalOpen(false)}
-            footer={[
-              <Button key="back" onClick={() => setIsModalOpen(false)}>
-                Return
-              </Button>,
-            ]}
+            footer={[]}
             >
             <div style={{ paddingTop: 20 }}>
               <Stepper

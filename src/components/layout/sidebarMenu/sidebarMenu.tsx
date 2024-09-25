@@ -1,4 +1,4 @@
-import { FaUserFriends, FaHome, FaList } from "react-icons/fa";
+import { FaFlask, FaHome, FaCheck } from "react-icons/fa";
 import {
   // PiClipboardText,
   PiLockBold,
@@ -13,16 +13,16 @@ const SidebarMenu = () => {
     <Menu
       mode="inline"
       items={[
-        {
-          key: "dashboard",
-          label: (
-            <NavLink to="/dashboard">
-              Dashboard
-            </NavLink>
-          ),
-          title: "Dashboard",
-          icon: <FaHome />,
-        },
+        // {
+        //   key: "dashboard",
+        //   label: (
+        //     <NavLink to="/dashboard">
+        //       Dashboard
+        //     </NavLink>
+        //   ),
+        //   title: "Dashboard",
+        //   icon: <FaHome />,
+        // },
         {
           key: "home",
           label: (
@@ -41,7 +41,7 @@ const SidebarMenu = () => {
             </NavLink>
           ),
           title: "Order",
-          icon: <FaList />,
+          icon: <FaFlask />,
         },
         {
           key: "adminUpdate",
@@ -51,7 +51,7 @@ const SidebarMenu = () => {
             </NavLink>
           ),
           title: "Admin Update",
-          // icon: <FaList />,
+          icon: <FaCheck />,
         },
         // {
         //   key: "userManagement",
