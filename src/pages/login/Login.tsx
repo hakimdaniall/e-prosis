@@ -71,17 +71,18 @@ const LoginPage = () => {
         justifyContent: "center",
         alignItems: "center",
         height: "100vh",
-        backgroundImage: `url(${bgImage})`,
+        // backgroundImage: `url(${bgImage})`,
+        backgroundColor: "#000",
         backgroundSize: "cover",
         backgroundRepeat: "no-repeat",
       }}
     >
       <div style={{ justifyContent: "center" }}>
-        <div
+        {/* <div
           style={{ display: "flex", justifyContent: "center", margin: "20px" }}
         >
           <img alt="example" src={logo} />
-        </div>
+        </div> */}
         <Card title="Login" style={{ width: 350 }}>
           <Form
             name="loginForm"
@@ -99,6 +100,7 @@ const LoginPage = () => {
               <Controller
                 name="email"
                 control={control}
+                defaultValue="test@test.com"
                 render={({ field }) => <Input placeholder="Email" {...field} />}
               />
             </Form.Item>
@@ -112,6 +114,7 @@ const LoginPage = () => {
               <Controller
                 name="password"
                 control={control}
+                defaultValue="test1234"
                 render={({ field }) => (
                   <Input.Password placeholder="Password" {...field} />
                 )}

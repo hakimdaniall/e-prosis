@@ -23,5 +23,5 @@ export const PrivateRoute = () => {
 };
 
 export const PublicRoute = () => {
-  return !isAuthenticated ? <Outlet /> : <Navigate to="/dashboard" />;
+  return !isAuthenticated ? <Outlet /> : <Navigate to="/home" />;
 };
