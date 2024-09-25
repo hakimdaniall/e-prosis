@@ -4,9 +4,9 @@ import { Modal, Button, Table, List, Card, Row, Col } from 'antd';
 // Chemical Inventory Component
 const ChemicalInventory = () => {
   const chemicalData = [
-    { name: 'Chemical A', location: 'Link to Google Drive A' },
-    { name: 'Chemical B', location: 'Link to Google Drive B' },
-    { name: 'Chemical C', location: 'Link to Google Drive C' },
+    { name: 'Chemical A', location: 'https://www.google.com' },
+    { name: 'Chemical B', location: 'https://www.google.com' },
+    { name: 'Chemical C', location: 'https://www.google.com' },
   ];
 
   return (
@@ -46,7 +46,7 @@ const ProcedureFlowchart = () => {
 
       <Modal 
         title="Procedure Flowchart" 
-        visible={isModalVisible} 
+        open={isModalVisible} 
         onCancel={handleCancel} 
         footer={null} 
         width={800}
