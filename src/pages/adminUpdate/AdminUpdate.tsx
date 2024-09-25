@@ -41,7 +41,7 @@ const AdminUpdate = () => {
           renderItem={(order) => (
             <List.Item>
               <List.Item.Meta
-                title={`Order ID: ${order.id}`}
+                title={order.title}
               />
               <Button type="primary" onClick={() => handleShowSteps(order)}>
                 View Details
@@ -54,7 +54,7 @@ const AdminUpdate = () => {
       {/* Modal to show delivery steps */}
       {selectedOrder && (
         <Modal
-          title={`Delivery Steps for Order ID: ${selectedOrder.id}`}
+          title={`Delivery Steps for ${selectedOrder.title}`}
           open={isModalVisible}
           onCancel={() => setIsModalVisible(false)}
           footer={null}
@@ -71,7 +71,9 @@ const AdminUpdate = () => {
                     />
                   </div>
                   <div style={{ flex: '1 1 50%', textAlign: 'right' }}>
-                    <Text>Status: {step.status || 'Pending'}</Text>
+                    <Text style={{ textTransform: "capitalize"}}>
+                      Status: {step.status || 'Pending'}
+                    </Text>
                     <br />
                     <Text>Timestamp: {formatTimestamp(step.timestamp)}</Text>
                     {step.status === 'process' && (
@@ -79,7 +81,7 @@ const AdminUpdate = () => {
                         <Button
                           type="primary"
                           onClick={() => handleUpdateStatus(index)}
-                          style={{ marginLeft: '20px' }}
+                          style={{ marginTop: '10px' }}
                         >
                           Mark as Finished
                         </Button>
