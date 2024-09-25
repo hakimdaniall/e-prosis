@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { Modal, Button, Table, List, Card, Row, Col } from 'antd';
+import { Modal, Button, Table, List, Card, Row, Col, Upload, message } from 'antd';
+import { UploadOutlined } from '@ant-design/icons';
 
 // Chemical Inventory Component
 const ChemicalInventory = () => {
@@ -90,6 +91,72 @@ const PurchaseForm = () => {
   );
 };
 
+const UploadComponent = () => {
+  const [fileList, setFileList] = useState<any[]>([]);
+  const [isModalVisible, setIsModalVisible] = useState(false);
+
+  const handleUpload = (info: any) => {
+    if (info.file.status === 'done') {
+      message.success(`${info.file.name} uploaded successfully`);
+    } else if (info.file.status === 'error') {
+      message.error(`${info.file.name} upload failed.`);
+    }
+    setFileList(info.fileList.slice(-1)); // Ensure only the last file remains in the list
+  };
+
+  const handleSubmit = () => {
+    setIsModalVisible(true);
+  };
+
+  const handleOk = () => {
+    setIsModalVisible(false);
+    message.success('File submitted successfully');
+    setFileList([]); // Clear the file list after successful submission
+  };
+
+  const handleCancel = () => {
+    setIsModalVisible(false);
+  };
+
+  return (
+    <div>
+      <p>To submit your completed purchase form, please use the drag-and-drop area below:</p>
+      <p>Ensure that your file is filled out completely before uploading. Thank you!</p>
+
+      <Upload.Dragger
+        name="file"
+        fileList={fileList}
+        multiple={false}
+        onChange={handleUpload}
+        showUploadList={{ showRemoveIcon: false }} // Prevent removing the file manually
+      >
+        <p className="ant-upload-drag-icon">
+          <UploadOutlined />
+        </p>
+        <p className="ant-upload-text">Drag and drop a file here, or click to select a file</p>
+      </Upload.Dragger>
+
+      {fileList.length > 0 && (
+        <Button
+          type="primary"
+          onClick={handleSubmit}
+          style={{ marginTop: '10px' }}
+        >
+          Submit
+        </Button>
+      )}
+
+      <Modal
+        title="Confirm Submission"
+        visible={isModalVisible}
+        onOk={handleOk}
+        onCancel={handleCancel}
+      >
+        <p>Are you sure you want to submit the uploaded file?</p>
+      </Modal>
+    </div>
+  );
+};
 
 const Home = () => {
   return (
@@ -128,10 +195,10 @@ const Home = () => {
         
         <Col xs={24} lg={12} style={{ height: '50%' }}>
           <Card 
-            title="Upload" 
+            title="Submit Order Form" 
             style={{ height: '100%' }} 
           >
-            Upload
+            <UploadComponent />
           </Card>
         </Col>
       </Row>
