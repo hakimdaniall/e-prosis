@@ -52,9 +52,9 @@ const ProcedureFlowchart = () => {
         width={800}
       >
         <iframe 
-          src="https://example.com/flowchart.pdf" 
-          width="100%" 
-          height="500px" 
+          src="https://pii.or.id/uploads/dummies.pdf" 
+          width={100}
+          style={{ width: '100%', height: '100vh', maxHeight: 700 }}
           title="Flowchart PDF"
         />
       </Modal>
@@ -65,7 +65,7 @@ const ProcedureFlowchart = () => {
 // Purchase Form Component
 const PurchaseForm = () => {
   const downloadForm = () => {
-    window.open('https://example.com/order-form.pdf');
+    window.open('https://pii.or.id/uploads/dummies.pdf');
   };
 
   const terms = [
