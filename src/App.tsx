@@ -3,6 +3,7 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Dashboard from "./pages/dashboard/DashboardPage";
 import Home from "./pages/home/Home";
 import Order from "./pages/order/Order"
+import AdminUpdate from "./pages/adminUpdate/AdminUpdate";
 import ForgotPassword from "./pages/forgotPassword/ForgotPassword";
 import Login from "./pages/login/Login";
 import PermissionList from "./pages/permission/PermissionList";
@@ -34,6 +35,7 @@ const App = () => {
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/home" element={<Home />} />
             <Route path="/order" element={<Order />} />
+            <Route path="/admin-update" element={<AdminUpdate />} />
             <Route path="/products" element={<Users />} />
             <Route path="/products/:id" element={<ProductDetails />} />
             <Route path="/products/new" element={<ProductAddNew />} />

@@ -43,6 +43,16 @@ const SidebarMenu = () => {
           title: "Order",
           icon: <FaList />,
         },
+        {
+          key: "adminUpdate",
+          label: (
+            <NavLink to="/admin-update">
+              Admin Update
+            </NavLink>
+          ),
+          title: "Admin Update",
+          // icon: <FaList />,
+        },
         // {
         //   key: "userManagement",
         //   label: (
