@@ -17,7 +17,7 @@ const orderData = [
         },
         {
           step: 'Pelawaan Vendor',
-          status: 'process',
+          status: 'finish',
           timestamp: '2024-09-23T12:00:00Z',
           description: '2 Bulan',
         },
@@ -33,7 +33,8 @@ const orderData = [
           timestamp: null,
           description: null,
         },
-      ]
+      ], 
+      rating: null,
     },
     {
       "id": 2,
@@ -69,7 +70,8 @@ const orderData = [
           "timestamp": null,
           "description": null
         }
-      ]
+      ],
+      rating: null,
     },
     {
       "id": 3,
@@ -105,7 +107,8 @@ const orderData = [
           "timestamp": null,
           "description": null
         }
-      ]
+      ],
+      rating: null,
     },
     {
       "id": 4,
@@ -141,7 +144,8 @@ const orderData = [
           "timestamp": null,
           "description": null
         }
-      ]
+      ],
+      rating: null,
     },
     {
       "id": 5,
@@ -177,7 +181,8 @@ const orderData = [
           "timestamp": "2024-09-07T14:00:00Z",
           "description": "Kutipan selesai"
         }
-      ]
+      ],
+      rating: null,
     },
     {
       "id": 6,
@@ -213,7 +218,8 @@ const orderData = [
           "timestamp": null,
           "description": null
         }
-      ]
+      ],
+      rating: null,
     },
     {
       "id": 7,
@@ -249,8 +255,83 @@ const orderData = [
           "timestamp": null,
           "description": null
         }
-      ]
-    }
+      ],
+      rating: null,
+    },
+    {
+      "id": 8,
+      title: 'Order number 7',
+      "delivery_steps": [
+        {
+          "step": "Ketua Pusat Pengajian IPSIS-FSG",
+          "status": "finish",
+          "timestamp": "2024-09-15T08:00:00Z",
+          "description": "2 Hari Bekerja"
+        },
+        {
+          "step": "Pegawai Perolehan",
+          "status": "finish",
+          "timestamp": "2024-09-17T10:30:00Z",
+          "description": "3 Hari Bekerja"
+        },
+        {
+          "step": "Pelawaan Vendor",
+          "status": "finish",
+          "timestamp": "2024-09-20T11:00:00Z",
+          "description": "2 Bulan"
+        },
+        {
+          "step": "Kutipan",
+          "status": "finish",
+          "timestamp": "2024-09-20T11:00:00Z",
+          "description": "Kutipan selesai"
+        },
+        {
+          "step": "Selesai",
+          "status": "finish",
+          "timestamp": "2024-09-20T11:00:00Z",
+          "description": "Kutipan selesai"
+        }
+      ],
+      rating: null,
+    },
+    {
+      "id": 9,
+      title: 'Order number 7',
+      "delivery_steps": [
+        {
+          "step": "Ketua Pusat Pengajian IPSIS-FSG",
+          "status": "finish",
+          "timestamp": "2024-09-15T08:00:00Z",
+          "description": "2 Hari Bekerja"
+        },
+        {
+          "step": "Pegawai Perolehan",
+          "status": "finish",
+          "timestamp": "2024-09-17T10:30:00Z",
+          "description": "3 Hari Bekerja"
+        },
+        {
+          "step": "Pelawaan Vendor",
+          "status": "finish",
+          "timestamp": "2024-09-20T11:00:00Z",
+          "description": "2 Bulan"
+        },
+        {
+          "step": "Kutipan",
+          "status": "finish",
+          "timestamp": "2024-09-20T11:00:00Z",
+          "description": "Kutipan selesai"
+        },
+        {
+          "step": "Selesai",
+          "status": "finish",
+          "timestamp": "2024-09-20T11:00:00Z",
+          "description": "Kutipan selesai"
+        }
+      ],
+      rating: 5,
+    },
 ]
   
 

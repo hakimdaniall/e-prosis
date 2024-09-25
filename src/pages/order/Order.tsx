@@ -170,40 +170,57 @@ const Order = () => {
       title: "Options",
       valueType: "option",
       width: 200,
-      render: (text, record, _, action) => [
-        <Button 
-            type="primary" 
-            onClick={() => showFormModal('record')}
-            key="viewForm"
-        >
-           View Form
-        </Button>,
-
-        <Button 
-            type="primary" 
-            onClick={() => showModal(record)}
-            key="viewStatus"
-        >
-           Track Order
-        </Button>,
-
-        <Button 
-          type="primary" 
-          onClick={() => showOrderReceivedModal(record)}
-          key="confirm"
-        >
-          Confirm Order
-        </Button>,
-
-        <Button 
-            type="primary" 
-            onClick={() => showRatingModal(record)}
-            key="rate"
-        >
-        Rate
-        </Button>,
-        
-      ],
+      render: (text, record, _, action) => {
+        const { delivery_steps } = record;
+    
+        // Check the status of the "Kutipan" step
+        const isKutipanFinish = delivery_steps.some((step: any) => 
+          step.step === "Kutipan" && step.status === "process"
+        );
+    
+        // Check the status of the "Selesai" step
+        const isSelesaiFinish = delivery_steps.some((step: any) => 
+          step.step === "Selesai" && step.status === "finish"
+        );
+    
+        return [
+          <Button 
+              type="primary" 
+              onClick={() => showFormModal('record')}
+              key="viewForm"
+          >
+             View Form
+          </Button>,
+    
+          <Button 
+              type="primary" 
+              onClick={() => showModal(record)}
+              key="viewStatus"
+          >
+             Track Order
+          </Button>,
+    
+          isKutipanFinish && (
+            <Button 
+              type="primary" 
+              onClick={() => showOrderReceivedModal(record)}
+              key="confirm"
+            >
+              Confirm Order
+            </Button>
+          ),
+    
+          (isSelesaiFinish && !record.rating) && (
+            <Button 
+              type="primary" 
+              onClick={() => showRatingModal(record)}
+              key="rate"
+            >
+              Rate
+            </Button>
+          ),
+        ];
+      }
     },
   ];
 
