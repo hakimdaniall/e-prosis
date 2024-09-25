@@ -15,16 +15,25 @@ const AdminUpdate = () => {
     setIsModalVisible(true);
   };
 
-  // Handle updating the status within the modal
+  // Handle updating the status within the modal with confirmation
   const handleUpdateStatus = (index: number) => {
-    const updatedSteps = selectedOrder.delivery_steps.map((step: any, idx: number) => {
-      if (idx === index && step.status === 'process') {
-        return { ...step, status: 'finish', timestamp: new Date().toISOString() };
-      }
-      return step;
-    });
+    Modal.confirm({
+      title: 'Confirm Mark as Finished',
+      content: 'Are you sure you want to mark this step as finished?',
+      onOk: () => {
+        const updatedSteps = selectedOrder.delivery_steps.map((step: any, idx: number) => {
+          if (idx === index && step.status === 'process') {
+            return { ...step, status: 'finish', timestamp: new Date().toISOString() };
+          }
+          return step;
+        });
 
-    setSelectedOrder({ ...selectedOrder, delivery_steps: updatedSteps });
+        setSelectedOrder({ ...selectedOrder, delivery_steps: updatedSteps });
+      },
+      onCancel: () => {
+        console.log('Cancelled'); // Optional: you can log or handle cancellation
+      },
+    });
   };
 
   // Function to format the timestamp
