@@ -14,7 +14,7 @@ import {
 } from "antd";
 import { PiBellBold } from "react-icons/pi";
 import SidebarMenu from "./sidebarMenu/sidebarMenu";
-import logo from "../../assets/images/ygt-logo.png";
+import logo from "../../assets/images/uitm-logo.png";
 import userIcon from "../../assets/images/user.png";
 import RouteList from "../../routes/RouteList";
 import { useTranslation } from "react-i18next";
