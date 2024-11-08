@@ -21,13 +21,12 @@ const RegisterPage = () => {
   const onSubmit = async (data: IRegister) => {
     const createAcc = await createAccount(data);
 
-    // Perform form submission logic here
 
     if (createAcc.status === "success") {
       message.success("Account Created Successful");
       navigate("/");
     } else {
-      message.error(createAcc.data.message);
+      message.error(createAcc.data.error.message);
     }
   };
 

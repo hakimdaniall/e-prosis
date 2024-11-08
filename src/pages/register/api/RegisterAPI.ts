@@ -3,8 +3,8 @@ import { IRegister } from "../type/registerType";
 import { apiRequest } from "../../../utils/API";
 
 export const createAccount = async (data: IRegister) => {
-  return await apiRequest<IRegister>("POST", "/auth/register", {
-    name: data.name,
+  return await apiRequest<IRegister>("POST", "/auth/local/register", {
+    username: data.name,
     email: data.email,
     password: data.password,
   });
