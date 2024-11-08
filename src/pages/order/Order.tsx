@@ -1,93 +1,50 @@
 import { useState } from "react";
 import { Button, Card, Input, message, Modal, Rate } from "antd";
 import { ProTable, ProColumns } from "@ant-design/pro-components";
-import axios, { AxiosResponse } from "axios";
-import { IProduct, IAPIResponseProducts } from "../products/type/ProductType";
-import { updateProduct, getProductsList } from "../products/api/ProductAPI";
+import { IProduct } from "../products/type/ProductType";
+import { updateProduct } from "../products/api/ProductAPI";
 import Stepper from "./Stepper/Stepper";
-import { getProductDetails, rateOrder } from "./api/OrderAPI";
-import orderData from "../../mockData";
+import { getProductDetails, rateOrder, getOrders } from "./api/OrderAPI";
 
 const { TextArea } = Input;
 
 const Order = () => {
-    
-  // wait process finish error
-    const delivery_steps = [
-      {
-        "step": 'Ketua Pusat Pengajian IPSIS-FSG',
-        "status": "finish",
-        "timestamp": "2024-09-22T08:00:00Z",
-        "description": "3 Hari Bekerja"
-      },
-      {
-        "step": 'Pegawai Perolehan',
-        "status": "finish",
-        "timestamp": "2024-09-23T12:00:00Z",
-        "description": "5 Hari Bekerja"
-      },
-      {
-        "step": 'Pelawaan Vendor',
-        "status": "finish",
-        "timestamp": null,
-        "description": "2 Bulan"
-      },
-      {
-        "step": 'Kutipan',
-        // "status": "process",
-        "status": "finish",
-        "timestamp": null,
-        // "description": "Tempoh kutipan ialah 1 minggu. Jika tiada kutipan dilakukan, bahan kimia yang dibeli akan dihantar ke stor simpanan."
-        "description": null
-      },
-      {
-        "step": 'Selesai',
-        "status": null,
-        "timestamp": null,
-        // "description": "Kutipan selesai"
-        "description": null
-      }
-    ]
-
-    const waitTimePromise = async (time: number = 100) => {
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        resolve(true);
-      }, time);
-    });
-  };
-
-  const waitTime = async (time: number = 100) => {
-    await waitTimePromise(time);
-  };
-
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isFormModalOpen, setIsFormModalOpen] = useState(false);
   const [isRatingModalOpen, setIsRatingModalOpen] = useState(false);
   const [isOrderReceivedModal, setIsOrderReceivedModal] = useState(false);
   const [ratingValue, setRatingValue] = useState(5);
-  const [currentProduct, setCurrentProduct] = useState<IProduct | null>(null); // Initial state as null
+  const [currentProduct, setCurrentProduct] = useState<IProduct | null>(null);
   const [confirmLoading, setConfirmLoading] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [comment, setComment] = useState("");
+  const [currentFormUrl, setCurrentFormUrl] = useState(''); // State to hold the selected form URL
 
 
   const showModal = (record: any) => {
-    setCurrentProduct(record)
+    setCurrentProduct(record);
     setIsModalOpen(true);
-    setIsLoading(true)
+    setIsLoading(true);
     setTimeout(() => {
-      setIsLoading(false)
-    }, 1000)
+      setIsLoading(false);
+    }, 1000);
   };
 
-  const showFormModal = (src: string) => {
-    console.log(src)
-    setIsFormModalOpen(true);
-    setIsLoading(true)
-    setTimeout(() => {
-      setIsLoading(false)
-    }, 1000)
+  const showFormModal = (src: any) => {
+    const formUrl = src.form?.[0]?.url; // Assuming each order has a 'form' field with a URL
+
+    console.log('process.env', process.env.REACT_APP_API_HOST)
+    if (formUrl) {
+      const fullUrl = `${process.env.REACT_APP_API_HOST}${formUrl}`;
+
+      console.log('🚀 ~ showFormModal ~ fullUrl:', fullUrl);
+      setCurrentFormUrl(fullUrl);
+      setIsFormModalOpen(true);
+      setIsLoading(true);
+      setTimeout(() => {
+        setIsLoading(false);
+      }, 1000);
+    }
   };
 
   const showRatingModal = async (record: any) => {
@@ -95,17 +52,16 @@ const Order = () => {
     setIsRatingModalOpen(true);
     
     try {
-        const response = await getProductDetails(record.id);
-        const productData = response.data;
-        setCurrentProduct(productData);
-        setRatingValue(5);
-        setComment("");
-        setIsLoading(false);
+      const response = await getProductDetails(record.id);
+      const productData = response.data;
+      setCurrentProduct(productData);
+      setRatingValue(5);
+      setComment("");
+      setIsLoading(false);
     } catch (error) {
-        console.error("Error fetching product details:", error);
+      console.error("Error fetching product details:", error);
     }
-    
-  }
+  };
 
   const handleRateOrder = async () => {
     setConfirmLoading(true);
@@ -116,43 +72,38 @@ const Order = () => {
   
     try {
       const response = await rateOrder(payload);
-      console.log("Response:", response);
-      message.success("Successfully Rate Order")
+      message.success("Successfully rated order");
       setConfirmLoading(false);
       setIsRatingModalOpen(false);
     } catch (error) {
       console.error("Failed to rate order:", error);
-      message.error("Failed to rate order")
+      message.error("Failed to rate order");
       setConfirmLoading(false);
     }
   };
 
   const showOrderReceivedModal = async (record: any) => {
-
     setIsLoading(true);
-    setIsOrderReceivedModal(true)
+    setIsOrderReceivedModal(true);
     
     try {
       const response = await getProductDetails(record.id);
       const productData = response.data;
       setCurrentProduct(productData);
-      setIsLoading(false)
+      setIsLoading(false);
     } catch (error) {
       console.error("Error fetching product details:", error);
     }
-      
-  }
+  };
 
   const handleOkOrderReceived = () => {
-    console.log('handleOkOrderReceived')
     setConfirmLoading(true);
     setTimeout(() => {
-      setIsOrderReceivedModal(false)
+      setIsOrderReceivedModal(false);
       setConfirmLoading(false);
-      console.log(currentProduct)
       message.success("Order has been successfully marked as received.");
     }, 3000);
-  }
+  };
 
   const columns: ProColumns<any>[] = [
     {
@@ -170,57 +121,36 @@ const Order = () => {
       title: "Options",
       valueType: "option",
       width: 200,
-      render: (text, record, _, action) => {
+      render: (text, record) => {
         const { delivery_steps } = record;
-    
-        // Check the status of the "Kutipan" step
-        const isKutipanFinish = delivery_steps.some((step: any) => 
-          step.step === "Kutipan" && step.status === "process"
-        );
-    
-        // Check the status of the "Selesai" step
-        const isSelesaiFinish = delivery_steps.some((step: any) => 
-          step.step === "Selesai" && step.status === "finish"
-        );
-    
+
+        // const isKutipanFinish = delivery_steps.some(
+        //   (step: any) => step.step === "Kutipan" && step.status === "process"
+        // );
+
+        // const isSelesaiFinish = delivery_steps.some(
+        //   (step: any) => step.step === "Selesai" && step.status === "finish"
+        // );
+
         return [
-          <Button 
-              type="primary" 
-              onClick={() => showFormModal('record')}
-              key="viewForm"
-          >
-             View Form
+          <Button type="primary" onClick={() => showFormModal(record)} key="viewForm">
+            View Form
           </Button>,
-    
-          <Button 
-              type="primary" 
-              onClick={() => showModal(record)}
-              key="viewStatus"
-          >
-             Track Order
+          <Button type="primary" onClick={() => showModal(record)} key="viewStatus">
+            Track Order
           </Button>,
-    
-          isKutipanFinish && (
-            <Button 
-              type="primary" 
-              onClick={() => showOrderReceivedModal(record)}
-              key="confirm"
-            >
-              Confirm Order
-            </Button>
-          ),
-    
-          (isSelesaiFinish && !record.rating) && (
-            <Button 
-              type="primary" 
-              onClick={() => showRatingModal(record)}
-              key="rate"
-            >
-              Rate
-            </Button>
-          ),
+          // isKutipanFinish && (
+          //   <Button type="primary" onClick={() => showOrderReceivedModal(record)} key="confirm">
+          //     Confirm Order
+          //   </Button>
+          // ),
+          // isSelesaiFinish && !record.rating && (
+          //   <Button type="primary" onClick={() => showRatingModal(record)} key="rate">
+          //     Rate
+          //   </Button>
+          // ),
         ];
-      }
+      },
     },
   ];
 
@@ -229,35 +159,28 @@ const Order = () => {
       <ProTable
         search={false}
         cardBordered
-        request={async (params, sort, filter) => {
+        request={async () => {
           try {
-            const data = await getProductsList({ filter, sort, params });
+            const data = await getOrders({});
 
+            console.log(data.data)
             return {
-              // data: data.products,
-              data: orderData,
+              data: data.data, // Assuming `data` structure contains `data` array with orders
               success: true,
-              total: data.total,
+              total: data.data.length, // Adjust if there's a different total count available
             };
           } catch (error) {
-            console.error("Error fetching products:", error);
+            console.error("Error fetching orders:", error);
             return {
               data: [],
               success: false,
-              total: 10,
+              total: 0,
             };
           }
         }}
         rowKey={(data) => data.id}
         bordered
         columns={columns}
-        editable={{
-          type: "multiple",
-          onSave: async (rowKey, data, row) => {
-            updateProduct(data);
-            await waitTime(2000);
-          },
-        }}
       />
         <Modal
           title="View Form"
@@ -267,11 +190,16 @@ const Order = () => {
           footer={[]}
           width={890}
         >
-          <iframe 
-            src="https://pii.or.id/uploads/dummies.pdf" 
-            width={100}
-            style={{ width: '100%', height: '100vh', maxHeight: 700 }}
-          ></iframe>
+          {/* Render iframe with the dynamic URL */}
+          {currentFormUrl ? (
+            <iframe
+              src={currentFormUrl}
+              width="100%"
+              style={{ height: '70vh', maxHeight: 700 }}
+            ></iframe>
+          ) : (
+            <p>No form available for this order.</p>
+          )}
         </Modal>
 
         <Modal

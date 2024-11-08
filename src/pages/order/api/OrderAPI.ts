@@ -1,4 +1,10 @@
 import axios, { AxiosResponse } from "axios";
+import { apiRequest } from "../../../utils/API";
+
+export const getOrders = async (data: any) => {
+  return await apiRequest<any>("GET", "/api/orders");
+};
+
 
 export const getProductDetails = async (id: string) => {
     const data = axios.get("https://dummyjson.com/products/" + id);
