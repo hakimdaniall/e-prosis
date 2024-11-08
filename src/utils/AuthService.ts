@@ -1,89 +1,76 @@
 import Cookies from "js-cookie";
 
-type TToken = {
-  access: {
-    token: string;
-    expires: string;
-  };
-  refresh: {
-    token: string;
-    expires: string;
-  };
-};
-
 type TUserSession = {
   rememberme: boolean;
-  token: TToken;
-  user: string;
+  jwt: string; // JWT token
+  user: {
+    id: number;
+    documentId: string;
+    username: string;
+    email: string;
+    provider: string;
+    confirmed: boolean;
+    blocked: boolean;
+    createdAt: string;
+    updatedAt: string;
+    publishedAt: string;
+  };
 };
 
-// save the token and user into the cookies and expired in 30 days
-export const setUserSession = ({ rememberme, token, user }: TUserSession) => {
-  Cookies.set("user", JSON.stringify(user), { expires: 30 });
-  console.log("token:", token.access);
-  if (rememberme === true) {
-    Cookies.set("token", JSON.stringify(token), { expires: 30 });
-    Cookies.set("user", JSON.stringify(user), { expires: 30 });
-  } else if (rememberme === false) {
-    Cookies.set("token", JSON.stringify(token), { expires: 1 });
-    Cookies.set("user", JSON.stringify(user), { expires: 1 });
-  }
+// Save JWT and user into cookies with expiry (30 days if remember me is checked)
+export const setUserSession = ({ rememberme, jwt, user }: TUserSession) => {
+  Cookies.set("user", JSON.stringify(user), { expires: rememberme ? 30 : 1 });
+  Cookies.set("jwt", jwt, { expires: rememberme ? 30 : 1 });
+  Cookies.set("rememberme", String(rememberme), { expires: rememberme ? 30 : 1 });
   return true;
 };
 
+// Clear user session from cookies
 export const deleteUserSession = () => {
   Cookies.remove("user");
+  Cookies.remove("jwt");
+  Cookies.remove("rememberme");
   return true;
 };
 
-// return the user data from the cookies
+// Retrieve user data from cookies
 export const getUser = () => {
   const userStr = Cookies.get("user");
-  if (userStr) {
-    return JSON.parse(userStr);
-  }
-  return null;
+  return userStr ? JSON.parse(userStr) : null;
 };
 
-interface Token {
-  access: {
-    token: string;
-    expires: string;
-  };
-  refresh: {
-    token: string;
-    expires: string;
-  };
-}
-
-// return the token from the cookies
-export const getToken = (): Token | null => {
-  const token = Cookies.get("token");
-  return token ? JSON.parse(token) : null;
+// Retrieve JWT token from cookies
+export const getToken = () => {
+  return Cookies.get("jwt") || null;
 };
 
-// remove the token and user from the cookies
+// Update JWT token in cookies
+export const setToken = (jwt: string, expires: number) => {
+  Cookies.set("jwt", jwt, { expires });
+};
+
+// Remove JWT token and user from cookies
 export const removeUserSession = () => {
-  Cookies.remove("token");
+  Cookies.remove("jwt");
   Cookies.remove("user");
   Cookies.remove("rememberme");
 };
 
-// return the remember me value from the cookies
+// Get remember me value from cookies
 export const getRememberMe = () => Cookies.get("rememberme") || null;
 
-// update and save the token into the cookies
-export const setToken = (token: Token, expires: number) => {
-  console.log("strig token: ", JSON.stringify(token));
-  Cookies.set("token", JSON.stringify(token), { expires });
-};
-
+// Set a toast message in cookies with a 1-day expiry
 export const setToast = (isToast: any) => {
   Cookies.set("toast", JSON.stringify(isToast), { expires: 1 });
 };
 
-export const getToast = () => Cookies.get("toast") || null;
+// Retrieve the toast message from cookies
+export const getToast = () => {
+  const toast = Cookies.get("toast");
+  return toast ? JSON.parse(toast) : null;
+};
 
+// Remove the toast message from cookies
 export const removeToast = () => {
   Cookies.remove("toast");
 };

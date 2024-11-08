@@ -3,8 +3,8 @@ import { ILogin } from "../type/loginType";
 import { apiRequest } from "../../../utils/API";
 
 export const login = async (data: ILogin) => {
-  return await apiRequest<ILogin>("POST", "/auth/login", {
-    email: data.email,
+  return await apiRequest<ILogin>("POST", "/auth/local", {
+    identifier: data.email,
     password: data.password,
   });
 };

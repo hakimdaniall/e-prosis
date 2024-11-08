@@ -1,4 +1,4 @@
-import axios, { AxiosResponse, AxiosError, Method } from "axios";
+import axios, { AxiosResponse, Method } from "axios";
 import {
   getToken,
   getRememberMe,
@@ -10,31 +10,31 @@ const apiHost = process.env.REACT_APP_API_HOST;
 
 const axiosInstance = axios.create();
 
+// Add request interceptor to include JWT in headers
 axiosInstance.interceptors.request.use(
   (config) => {
-    const tokens = getToken();
-
-    if (tokens) {
-      config.headers.Authorization = `Bearer ${tokens.access.token}`;
+    const jwt = getToken(); // Retrieves JWT directly
+    if (jwt) {
+      config.headers.Authorization = `Bearer ${jwt}`;
     }
     return config;
   },
-
   (error) => Promise.reject(error)
 );
 
+// Refresh the JWT token if expired
 const refreshToken = async () => {
-  const tokens = getToken();
+  const jwt = getToken();
   const rememberMe = getRememberMe();
 
   try {
-    const resp = await axiosInstance.post("v1/auth/refresh-tokens", {
-      refreshToken: tokens?.refresh.token,
+    const resp = await axiosInstance.post(`${apiHost}/v1/auth/refresh-tokens`, {
+      token: jwt,
       rememberMe,
     });
-    return resp.data;
+    return resp.data; // Assuming new JWT is returned
   } catch (e) {
-    console.log("Error", e);
+    console.log("Error refreshing token:", e);
     removeUserSession();
     window.location.href = "/";
   }
@@ -47,47 +47,47 @@ axiosInstance.interceptors.response.use(
   async (error) => {
     const originalRequest = error.config;
     const rememberMe = getRememberMe();
-    const tokens = getToken();
-    if (error.response.status === 401 && !originalRequest._retry) {
+    const jwt = getToken();
+    
+    if (error.response?.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true;
-      console.log("remember me", rememberMe);
-      console.log("tokens", tokens);
 
-      if (tokens !== null) {
+      if (jwt) {
         const newTokens = await refreshToken();
 
-        // eslint-disable-next-line no-extra-boolean-cast
-        if (!!newTokens) {
-          setToken(newTokens, rememberMe === "true" ? 7 : 1);
-          axiosInstance.defaults.headers.common.Authorization = `Bearer ${newTokens.access.token}`;
+        if (newTokens?.jwt) {
+          // Update token and set expiration
+          setToken(newTokens.jwt, rememberMe === "true" ? 30 : 1);
+          axiosInstance.defaults.headers.common.Authorization = `Bearer ${newTokens.jwt}`;
         }
 
-        return axiosInstance(originalRequest);
+        return axiosInstance(originalRequest); // Retry original request with new JWT
       }
     }
     return Promise.reject(error);
   }
 );
 
+// Main function to make API requests
 async function apiRequest<T>(method: Method, url: string, data: any = {}) {
-  const token = getToken();
+  const jwt = getToken();
   let params;
   if (data.params) {
     params = data.params.params;
-    console.log("paramas:", params);
   }
+  
   try {
     const response: AxiosResponse = await axiosInstance({
       method,
-      headers: { Authorization: token ? `Bearer ${token.access.token}` : "" },
+      headers: { Authorization: jwt ? `Bearer ${jwt}` : "" },
       url: apiHost + url,
       params,
       data,
     });
     return { status: "success", data: response.data };
   } catch (error: any) {
-    console.log("in api error:", error);
-    return { status: "failed", data: error.response.data };
+    console.log("API error:", error);
+    return { status: "failed", data: error.response?.data };
   }
 }
 

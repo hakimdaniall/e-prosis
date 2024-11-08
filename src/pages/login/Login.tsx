@@ -23,45 +23,27 @@ const LoginPage = () => {
   });
 
   const onSubmit = async (data: ILogin) => {
-    //Dummy login
-    const setUser = setUserSession({
-      rememberme: true,
-      token: {
-        access: {
-          token: "dummy Token",
-          expires: "dummy expiry",
-        },
-        refresh: {
-          token: "dummy Token",
-          expires: "dummy expiry",
-        },
-      },
-      user: "admin",
-    });
-    
-    if (setUser === true) {
-      navigate(0);
+    // Perform login request
+    const loginAcc = await login(data);
+
+    if (loginAcc.status === "success") {
+      const userDetail = loginAcc.data;
+  
+      // Set session with the new user structure and JWT
+      const setUser = setUserSession({
+        rememberme: data.rememberme,
+        jwt: userDetail.jwt, // Passing JWT token directly
+        user: userDetail.user, // Passing user details
+      });
+  
+      if (setUser === true) {
+        navigate(0); // Reload the page to reflect logged-in state
+      } else {
+        alert("Error setting session");
+      }
     } else {
-      alert("error");
+      message.error(loginAcc.data.error.message); // Display error message if login fails
     }
-    
-
-    // Perform form submission logic here
-
-    // const loginAcc = await login(data);
-    // console.log(loginAcc);
-
-    // if (loginAcc.status === "success") {
-    //   const userDetail = loginAcc.data;
-    //   const setUser = setUserSession({
-    //     rememberme: data.rememberme,
-    //     token: userDetail.tokens,
-    //     user: userDetail.user,
-    //   });
-    //   setUser === true ? navigate(0) : message.error("error");
-    // } else {
-    //   message.error(loginAcc.data.message);
-    // }
   };
 
   return (
@@ -100,7 +82,7 @@ const LoginPage = () => {
               <Controller
                 name="email"
                 control={control}
-                defaultValue="test@test.com"
+                defaultValue="student2@test.com"
                 render={({ field }) => <Input placeholder="Email" {...field} />}
               />
             </Form.Item>
@@ -114,7 +96,7 @@ const LoginPage = () => {
               <Controller
                 name="password"
                 control={control}
-                defaultValue="test1234"
+                defaultValue="Test1234"
                 render={({ field }) => (
                   <Input.Password placeholder="Password" {...field} />
                 )}
