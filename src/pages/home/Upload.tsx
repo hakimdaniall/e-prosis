@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Upload, Button, Modal, message, UploadFile } from 'antd';
+import { Upload, Button, Modal, message, UploadFile, Input, Form } from 'antd';
 import { UploadOutlined } from '@ant-design/icons';
 import axios from 'axios';
 import Cookies from "js-cookie";
@@ -120,19 +120,23 @@ const UploadComponent = () => {
       <p>To submit your completed purchase form, please use the drag-and-drop area below:</p>
       <p>Ensure that your file is filled out completely before uploading. Thank you!</p>
 
-      <input
-        type="text"
-        value={title}
-        onChange={(e) => setTitle(e.target.value)}
-        placeholder="Enter form title"
-        style={{ marginBottom: '10px', width: '100%' }}
-      />
+      <Form.Item
+        label ="Form Title"
+      >
+        <Input
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+          placeholder="Enter form title"
+          style={{ marginBottom: '10px', width: '100%' }}
+        />
+      </Form.Item>
 
       <Upload.Dragger
         name="file"
         fileList={fileList}
         multiple={false}
         onChange={handleUpload}
+        beforeUpload={() => false}
         showUploadList={{ showRemoveIcon: false }} // Prevent removing the file manually
       >
         <p className="ant-upload-drag-icon">
