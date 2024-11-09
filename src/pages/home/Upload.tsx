@@ -11,9 +11,10 @@ interface FileWithOrigin extends UploadFile {
 
 const UploadComponent = () => {
   const [fileList, setFileList] = useState<FileWithOrigin[]>([]); // Define the type for fileList
-  const [title, setTitle] = useState('');
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [fileId, setFileId] = useState<number | null>(null); // To store the uploaded file's ID
+
+  const [form] = Form.useForm(); // Initialize the form instance
 
   // Handle file selection
   const handleUpload = (info: any) => {
@@ -42,8 +43,9 @@ const UploadComponent = () => {
 
         if (uploadedFileId) {
           // Step 2: Create an order with the uploaded file ID
-          await createOrder(title, uploadedFileId);
+          await createOrder(form.getFieldValue('title'), uploadedFileId);
           message.success('File submitted successfully');
+          form.resetFields(); // Reset form fields after submission
           setFileList([]); // Clear file list after submission
         } else {
           message.error('Error: File upload failed');
@@ -117,43 +119,51 @@ const UploadComponent = () => {
 
   return (
     <div>
-      <p>To submit your completed purchase form, please use the drag-and-drop area below:</p>
-      <p>Ensure that your file is filled out completely before uploading. Thank you!</p>
+      {/* <p>To submit your completed purchase form, please use the drag-and-drop area below:</p>
+      <p>Ensure that your file is filled out completely before uploading. Thank you!</p> */}
 
-      <Form.Item
-        label ="Form Title"
+      <Form
+        form={form} // Attach the form instance
+        onFinish={handleSubmit} // Trigger the handleSubmit when the form is valid
+        layout="vertical" // Horizontal layout for form
       >
-        <Input
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-          placeholder="Enter form title"
-          style={{ marginBottom: '10px', width: '100%' }}
-        />
-      </Form.Item>
-
-      <Upload.Dragger
-        name="file"
-        fileList={fileList}
-        multiple={false}
-        onChange={handleUpload}
-        beforeUpload={() => false}
-        showUploadList={{ showRemoveIcon: false }} // Prevent removing the file manually
-      >
-        <p className="ant-upload-drag-icon">
-          <UploadOutlined />
-        </p>
-        <p className="ant-upload-text">Drag and drop a file here, or click to select a file</p>
-      </Upload.Dragger>
-
-      {fileList.length > 0 && (
-        <Button
-          type="primary"
-          onClick={handleSubmit}
-          style={{ marginTop: '10px' }}
+        <Form.Item
+          label="Form Title"
+          name="title" // Name to link with form values
+          rules={[{ required: true, message: 'Please enter the form title' }]} // Validation for title
         >
-          Submit
-        </Button>
-      )}
+          <Input
+            placeholder="Enter form title"
+            style={{ marginBottom: '10px', width: '100%' }}
+          />
+        </Form.Item>
+
+        <Form.Item
+          label="File Upload"
+          name="file"
+          rules={[{ required: true, message: 'Please upload a file' }]} // Validation for file upload
+        >
+          <Upload.Dragger
+            name="file"
+            fileList={fileList}
+            multiple={false}
+            onChange={handleUpload}
+            beforeUpload={() => false} // Prevent auto upload, handle manually
+            showUploadList={{ showRemoveIcon: false }} // Prevent removing the file manually
+          >
+            <p className="ant-upload-drag-icon">
+              <UploadOutlined />
+            </p>
+            <p className="ant-upload-text">Drag and drop a file here, or click to select a file</p>
+          </Upload.Dragger>
+        </Form.Item>
+
+        <Form.Item>
+          <Button type="primary" htmlType="submit" style={{ marginTop: '10px' }}>
+            Submit
+          </Button>
+        </Form.Item>
+      </Form>
 
       <Modal
         title="Confirm Submission"
