@@ -20,30 +20,79 @@ const Order = () => {
   const [comment, setComment] = useState("");
   const [currentFormUrl, setCurrentFormUrl] = useState(''); // State to hold the selected form URL
 
+  const initialDeliverySteps = [
+    {
+      step: 'Ketua Pusat Pengajian IPSIS-FSG',
+      timestamp: "2024-09-22T08:00:00Z",
+      description: "3 Hari Bekerja",
+      status: null,
+    },
+    {
+      step: 'Pegawai Perolehan',
+      timestamp: "2024-09-23T12:00:00Z",
+      description: "5 Hari Bekerja",
+      status: null,
+    },
+    {
+      step: 'Pelawaan Vendor',
+      timestamp: null,
+      description: "2 Bulan",
+      status: null,
+    },
+    {
+      step: 'Kutipan',
+      status: "finish",
+      timestamp: null,
+      description: null,
+    },
+    {
+      step: 'Selesai',
+      status: null,
+      timestamp: null,
+      description: null,
+    }
+  ];
 
-  const showModal = (record: any) => {
+  const [deliverySteps, setDeliverySteps] = useState(initialDeliverySteps);
+
+
+  const updateDeliverySteps = (currentStep: number, currentStepStatus: any) => {
+    setDeliverySteps(prevSteps =>
+      prevSteps.map((step, index) => {
+        if (index < currentStep - 1) {
+          return { ...step, status: "finish" };
+        } else if (index === currentStep - 1) {
+          return { ...step, status: currentStepStatus };
+        } else {
+          return { ...step, status: null };
+        }
+      })
+    );
+  };
+
+  
+  const showTrackOrderModal = (record: any) => {
     setCurrentProduct(record);
+    updateDeliverySteps(record.current_step, record.current_step_status);
     setIsModalOpen(true);
-    setIsLoading(true);
-    setTimeout(() => {
-      setIsLoading(false);
-    }, 1000);
+    console.log(deliverySteps)
+    // setIsLoading(true);
+    // setTimeout(() => {
+    //   setIsLoading(false);
+    // }, 1000);
   };
 
   const showFormModal = (src: any) => {
-    const formUrl = src.form?.[0]?.url; // Assuming each order has a 'form' field with a URL
+    const formUrl = src.form?.url;
 
-    console.log('process.env', process.env.REACT_APP_API_HOST)
     if (formUrl) {
       const fullUrl = `${process.env.REACT_APP_API_HOST}${formUrl}`;
-
-      console.log('🚀 ~ showFormModal ~ fullUrl:', fullUrl);
       setCurrentFormUrl(fullUrl);
       setIsFormModalOpen(true);
-      setIsLoading(true);
-      setTimeout(() => {
-        setIsLoading(false);
-      }, 1000);
+      // setIsLoading(true);
+      // setTimeout(() => {
+      //   setIsLoading(false);
+      // }, 1000);
     }
   };
 
@@ -122,33 +171,28 @@ const Order = () => {
       valueType: "option",
       width: 200,
       render: (text, record) => {
-        const { delivery_steps } = record;
+        const { current_step, current_step_status, rating, is_received } = record;
 
-        // const isKutipanFinish = delivery_steps.some(
-        //   (step: any) => step.step === "Kutipan" && step.status === "process"
-        // );
-
-        // const isSelesaiFinish = delivery_steps.some(
-        //   (step: any) => step.step === "Selesai" && step.status === "finish"
-        // );
+        const isKutipanFinish = current_step === 4 && current_step_status === 'process' && !is_received
+        const isSelesaiFinish = current_step === 5 && current_step_status === 'finish' && !rating
 
         return [
           <Button type="primary" onClick={() => showFormModal(record)} key="viewForm">
             View Form
           </Button>,
-          <Button type="primary" onClick={() => showModal(record)} key="viewStatus">
+          <Button type="primary" onClick={() => showTrackOrderModal(record)} key="viewStatus">
             Track Order
           </Button>,
-          // isKutipanFinish && (
-          //   <Button type="primary" onClick={() => showOrderReceivedModal(record)} key="confirm">
-          //     Confirm Order
-          //   </Button>
-          // ),
-          // isSelesaiFinish && !record.rating && (
-          //   <Button type="primary" onClick={() => showRatingModal(record)} key="rate">
-          //     Rate
-          //   </Button>
-          // ),
+          isKutipanFinish && (
+            <Button type="primary" onClick={() => showOrderReceivedModal(record)} key="confirm">
+              Confirm Order
+            </Button>
+          ),
+          isSelesaiFinish && !record.rating && (
+            <Button type="primary" onClick={() => showRatingModal(record)} key="rate">
+              Rate
+            </Button>
+          ),
         ];
       },
     },
@@ -163,7 +207,6 @@ const Order = () => {
           try {
             const data = await getOrders({});
 
-            console.log(data.data)
             return {
               data: data.data, // Assuming `data` structure contains `data` array with orders
               success: true,
@@ -211,7 +254,7 @@ const Order = () => {
             >
             <div style={{ paddingTop: 20 }}>
               <Stepper
-                deliverySteps={currentProduct?.delivery_steps || []}
+                deliverySteps={deliverySteps || []}
               />
             </div>
         </Modal>
