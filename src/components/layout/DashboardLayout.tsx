@@ -4,7 +4,9 @@ import {
   Typography,
   Avatar,
   MenuProps,
+  Button,
 } from "antd";
+import { LogoutOutlined } from '@ant-design/icons';
 import { PiBellBold } from "react-icons/pi";
 import SidebarMenu from "./sidebarMenu/sidebarMenu";
 import logo from "../../assets/images/uitm-logo.png";
@@ -125,7 +127,7 @@ const DashboardLayout = ({ children }: TDashboardLayout) => {
                 alignItems: "center",
               }}
             >
-              <PiBellBold size={20} style={{ marginRight: 10 }} />
+              {/* <PiBellBold size={20} style={{ marginRight: 10 }} /> */}
               <div
                 style={{
                   display: "flex",
@@ -145,9 +147,18 @@ const DashboardLayout = ({ children }: TDashboardLayout) => {
                   <Text strong>{user ? user.username : "Loading..."}</Text>
                   <Text>{user ? user.email : "Loading..."}</Text> 
                 </div>
-                <Avatar
+                {/* <Avatar
                   style={{ marginLeft: 10 }}
                   src={user && user.avatar ? `${process.env.REACT_APP_API_HOST}${user.avatar.url}` : null}
+                  onClick={() => {
+                    deleteUserSession();
+                    navigate(0);
+                  }}
+                /> */}
+                <Button
+                  type="link"
+                  icon={<LogoutOutlined />}
+                  style={{ marginLeft: 10 }}
                   onClick={() => {
                     deleteUserSession();
                     navigate(0);

@@ -54,7 +54,7 @@ const LoginPage = () => {
         alignItems: "center",
         height: "100vh",
         // backgroundImage: `url(${bgImage})`,
-        backgroundColor: "#000",
+        backgroundColor: "rgb(240, 234, 218)",
         backgroundSize: "cover",
         backgroundRepeat: "no-repeat",
       }}
