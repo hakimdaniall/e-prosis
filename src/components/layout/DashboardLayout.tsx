@@ -45,7 +45,7 @@ const DashboardLayout = ({ children }: TDashboardLayout) => {
         }
 
         // Replace with your Strapi API endpoint for getting user data
-        const response = await axios.get(`${process.env.REACT_APP_API_HOST}/api/users/me?populate=avatar`, {
+        const response = await axios.get(`${process.env.REACT_APP_API_HOST}/api/users/me`, {
           headers: {
             Authorization: `Bearer ${token}`, // Use the token from cookies
           },

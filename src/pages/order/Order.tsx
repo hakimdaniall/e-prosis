@@ -103,9 +103,7 @@ const Order = () => {
     setIsRatingModalOpen(true);
     
     try {
-      const response = await getProductDetails(record.id);
-      const productData = response.data;
-      setCurrentProduct(productData);
+      setCurrentProduct(record);
       setRatingValue(5);
       setComment("");
       setIsLoading(false);
@@ -116,16 +114,21 @@ const Order = () => {
 
   const handleRateOrder = async () => {
     setConfirmLoading(true);
+    const order_id = currentProduct?.id
+
     const payload = {
-      rating: ratingValue,
-      comment: comment,
+      data: {
+        rating: ratingValue,
+        comment: comment
+      }
     };
   
     try {
-      const response = await rateOrder(payload);
-      message.success("Successfully rated order");
+      const response = await updateOrder(order_id, payload);
       setConfirmLoading(false);
       setIsRatingModalOpen(false);
+      message.success(`Successfully rated order ${response.data.data.title}`);
+      actionRef.current?.reload();
     } catch (error) {
       console.error("Failed to rate order:", error);
       message.error("Failed to rate order");
