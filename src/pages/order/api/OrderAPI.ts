@@ -5,6 +5,9 @@ export const getOrders = async (data: any) => {
   return await apiRequest<any>("GET", "/api/orders");
 };
 
+export const updateOrder = async (id: any, data: any,) => {
+  return await apiRequest<any>("PUT", "/api/orders/" + id, data);
+}
 
 export const getProductDetails = async (id: string) => {
     const data = axios.get("https://dummyjson.com/products/" + id);

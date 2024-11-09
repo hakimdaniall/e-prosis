@@ -1,14 +1,16 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { Button, Card, Input, message, Modal, Rate } from "antd";
-import { ProTable, ProColumns } from "@ant-design/pro-components";
+import { ProTable, ProColumns, ActionType } from "@ant-design/pro-components";
 import { IProduct } from "../products/type/ProductType";
 import { updateProduct } from "../products/api/ProductAPI";
 import Stepper from "./Stepper/Stepper";
-import { getProductDetails, rateOrder, getOrders } from "./api/OrderAPI";
+import { getProductDetails, rateOrder, getOrders, updateOrder } from "./api/OrderAPI";
 
 const { TextArea } = Input;
 
 const Order = () => {
+  const actionRef = useRef<ActionType>(); // Create actionRef
+
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isFormModalOpen, setIsFormModalOpen] = useState(false);
   const [isRatingModalOpen, setIsRatingModalOpen] = useState(false);
@@ -136,22 +138,35 @@ const Order = () => {
     setIsOrderReceivedModal(true);
     
     try {
-      const response = await getProductDetails(record.id);
-      const productData = response.data;
-      setCurrentProduct(productData);
+      setCurrentProduct(record);
       setIsLoading(false);
     } catch (error) {
       console.error("Error fetching product details:", error);
     }
   };
 
-  const handleOkOrderReceived = () => {
+  const handleOkOrderReceived = async () => {
     setConfirmLoading(true);
-    setTimeout(() => {
+    
+    const order_id = currentProduct?.id
+
+    const payload = {
+      data: {
+        is_received: true,
+        current_step: 5,
+        current_step_status: "finish"
+      }
+    }
+
+    try {
+      const response = await updateOrder(order_id, payload)
       setIsOrderReceivedModal(false);
       setConfirmLoading(false);
-      message.success("Order has been successfully marked as received.");
-    }, 3000);
+      message.success(`${response?.data?.title} has been successfully marked as received.`);
+      actionRef.current?.reload();
+    } catch (error) {
+      console.error("Error marking order as received:", error);
+    }
   };
 
   const columns: ProColumns<any>[] = [
@@ -201,6 +216,7 @@ const Order = () => {
   return (
     <Card title="Order List" style={{ margin: 10 }}>
       <ProTable
+        actionRef={actionRef}
         search={false}
         cardBordered
         request={async () => {
