@@ -25,15 +25,31 @@ export const PrivateRoute = () => {
 };
 
 export const PublicRoute = () => {
-  // If the user is authenticated and is a moderator, navigate to /admin-update
   if (isAuthenticated) {
     if (isModerator) {
       return <Navigate to="/admin-update" />;
     }
-    // If the user is authenticated but not a moderator, navigate to /home
     return <Navigate to="/home" />;
   }
 
-  // If not authenticated, allow access to the public route
   return <Outlet />;
+};
+
+export const AdminRoute = () => {
+  if (!isAuthenticated) {
+    // If the user is not authenticated, redirect to the login page
+    return <Navigate to="/login" />;
+  }
+
+  if (!isModerator) {
+    // If the user is authenticated but not a moderator, redirect to /home or any other page
+    return <Navigate to="/home" />;
+  }
+
+  // If the user is authenticated and is a moderator, allow access to the admin page
+  return (
+    <DashboardLayout>
+      <Outlet />
+    </DashboardLayout>
+  );
 };

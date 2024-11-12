@@ -227,9 +227,11 @@ const Order = () => {
               Rate
             </Button>
           ),
-          <Button danger onClick={() => deleteOrder(record.id)}>
-            Cancel
-          </Button>
+          current_step !== 5 && (
+            <Button danger onClick={() => deleteOrder(record.id)}>
+              Cancel
+            </Button>
+          )
         ];
       },
     },

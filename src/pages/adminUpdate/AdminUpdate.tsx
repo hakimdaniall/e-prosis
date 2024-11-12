@@ -42,7 +42,7 @@ const AdminUpdate = () => {
             View Details
           </Button>,
           rating && comment && (
-          <Button type="primary" onClick={() => handleShowRating(record)} key="viewDetails">
+          <Button type="primary" onClick={() => handleShowRating(record)} key="viewRating">
             View Rating
           </Button>
           )

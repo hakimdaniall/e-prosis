@@ -16,7 +16,7 @@ import RolesList from "./pages/roles/RolesList";
 import Roles from "./pages/roles/view/Roles";
 import UserManagement from "./pages/userManagement/UserManagement";
 import UserAdd from "./pages/userManagement/view/User";
-import { PrivateRoute, PublicRoute } from "./utils/RouteHandlers";
+import { PrivateRoute, PublicRoute, AdminRoute } from "./utils/RouteHandlers";
 
 const queryClient = new QueryClient();
 
@@ -35,16 +35,9 @@ const App = () => {
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/home" element={<Home />} />
             <Route path="/order" element={<Order />} />
+          </Route>
+          <Route element={<AdminRoute />}>
             <Route path="/admin-update" element={<AdminUpdate />} />
-            {/* <Route path="/products" element={<Users />} /> */}
-            {/* <Route path="/products/:id" element={<ProductDetails />} /> */}
-            {/* <Route path="/products/new" element={<ProductAddNew />} /> */}
-            {/* <Route path="/users" element={<UserManagement />} /> */}
-            {/* <Route path="/users/:id" element={<UserAdd />} /> */}
-            {/* <Route path="/permissions" element={<PermissionList />} /> */}
-            {/* <Route path="/permissions/:id" element={<Permission />} /> */}
-            {/* <Route path="/roles" element={<RolesList />} /> */}
-            {/* <Route path="/roles/:id" element={<Roles />} /> */}
           </Route>
         </Routes>
       </BrowserRouter>
