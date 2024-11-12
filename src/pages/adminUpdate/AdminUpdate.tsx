@@ -1,84 +1,76 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { Button, Card, List, Typography, Modal } from 'antd';
+import React, { useState, useRef } from 'react';
+import { Button, Card, List, Typography, Modal, Rate } from 'antd';
 import moment from 'moment';
 import { fetchAllOrders, updateOrderStepStatus } from './api/AdminUpdateAPI';
 import { ProTable, ProColumns, ActionType } from '@ant-design/pro-components';
+import TextArea from 'antd/es/input/TextArea';
 
 const { Text } = Typography;
 
 const AdminUpdate = () => {
   const [selectedOrder, setSelectedOrder] = useState<any>(null);
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const [currentFormUrl, setCurrentFormUrl] = useState(''); // State to hold the selected form URL
+  const [isFormModalOpen, setIsFormModalOpen] = useState(false);
+  const [currentProduct, setCurrentProduct] = useState<any>(null);
+  const [isRatingModalOpen, setIsRatingModalOpen] = useState(false);
+
   const actionRef = useRef<ActionType>();
 
+  // Define the initial steps without any status
   const initialDeliverySteps = [
-    {
-      step: 'Ketua Pusat Pengajian IPSIS-FSG',
-      timestamp: "2024-09-22T08:00:00Z",
-      description: "3 Hari Bekerja",
-      status: null,
-    },
-    {
-      step: 'Pegawai Perolehan',
-      timestamp: "2024-09-23T12:00:00Z",
-      description: "5 Hari Bekerja",
-      status: null,
-    },
-    {
-      step: 'Pelawaan Vendor',
-      timestamp: null,
-      description: "2 Bulan",
-      status: null,
-    },
-    {
-      step: 'Kutipan',
-      status: "finish",
-      timestamp: null,
-      description: null,
-    },
-    {
-      step: 'Selesai',
-      status: null,
-      timestamp: null,
-      description: null,
-    }
+    { step: 'Ketua Pusat Pengajian IPSIS-FSG', description: '3 Hari Bekerja', status: null },
+    { step: 'Pegawai Perolehan', description: '5 Hari Bekerja', status: null },
+    { step: 'Pelawaan Vendor', description: '2 Bulan', status: null },
+    { step: 'Kutipan', description: null, status: null },
+    { step: 'Selesai', description: null, status: null },
   ];
 
-  const [deliverySteps, setDeliverySteps] = useState(initialDeliverySteps);
-
-  const columns: ProColumns<any>[]  = [
-    {
-      title: 'Order Title',
-      dataIndex: 'title',
-      key: 'title',
-    },
+  const columns: ProColumns<any>[] = [
+    { title: 'Order Title', dataIndex: 'title', key: 'title' },
     {
       title: "Options",
       valueType: "option",
       width: 200,
       render: (text, record) => {
+        const { rating, comment } = record;
+
         return [
-          <Button type="primary" onClick={() => handleShowSteps(record)} key="viewForm">
+          <Button type="primary" onClick={() => showFormModal(record)} key="viewForm">
             View Form
           </Button>,
-        ];
-      },
+          <Button type="primary" onClick={() => handleShowSteps(record)} key="viewDetails">
+            View Details
+          </Button>,
+          rating && comment && (
+          <Button type="primary" onClick={() => handleShowRating(record)} key="viewDetails">
+            View Rating
+          </Button>
+          )
+        ]
+      }
+    
     },
   ];
 
-  // useEffect(() => {
-  //   if (actionRef.current) {
-  //     actionRef.current.reload();
-  //   }
-  // }, []);
+  // Initialize the delivery steps based on `current_step` and `current_step_status`
+  const initializeSteps = (order: any) => {
+    return initialDeliverySteps.map((step, idx) => {
+      if (idx < order.current_step) {
+        return { ...step, status: 'finish' };
+      } else if (idx === order.current_step) {
+        return { ...step, status: order.current_step_status };
+      }
+      return step;
+    });
+  };
 
-  // Handle opening the modal with selected order
   const handleShowSteps = (order: any) => {
-    setSelectedOrder(order);
+    const initializedSteps = initializeSteps(order);
+    setSelectedOrder({ ...order, delivery_steps: initializedSteps });
     setIsModalVisible(true);
   };
 
-  // Handle updating the status within the modal with confirmation
   const handleUpdateStatus = (index: number) => {
     Modal.confirm({
       title: 'Confirm Mark as Finished',
@@ -86,23 +78,31 @@ const AdminUpdate = () => {
       onOk: () => {
         const updatedSteps = selectedOrder.delivery_steps.map((step: any, idx: number) => {
           if (idx === index && step.status === 'process') {
-            return { ...step, status: 'finish', timestamp: new Date().toISOString() };
+            return { ...step, status: 'finish' };
           }
           return step;
         });
-
         setSelectedOrder({ ...selectedOrder, delivery_steps: updatedSteps });
       },
-      onCancel: () => {
-        console.log('Cancelled');
-      },
+      onCancel: () => console.log('Cancelled'),
     });
   };
 
-  // Function to format the timestamp
-  const formatTimestamp = (timestamp: any) => {
-    return timestamp ? moment(timestamp).format('hh:mmA DD/MM/YYYY') : 'N/A';
+  const showFormModal = (src: any) => {
+    const formUrl = src.form?.url;
+
+    if (formUrl) {
+      const fullUrl = `${process.env.REACT_APP_API_HOST}${formUrl}`;
+      setCurrentFormUrl(fullUrl);
+      setIsFormModalOpen(true);
+    }
   };
+
+  const handleShowRating = (record: any) => {
+    setIsRatingModalOpen(true);
+    setCurrentProduct(record);
+  };
+
 
   return (
     <div style={{ padding: '20px' }}>
@@ -117,15 +117,11 @@ const AdminUpdate = () => {
               return {
                 data: data.data,
                 success: true,
-                total: data.data.length, // Adjust if there's a different total count available
+                total: data.data.length,
               };
             } catch (error) {
               console.error("Error fetching orders:", error);
-              return {
-                data: [],
-                success: false,
-                total: 0,
-              };
+              return { data: [], success: false, total: 0 };
             }
           }}
           rowKey={(data) => data.id}
@@ -134,7 +130,6 @@ const AdminUpdate = () => {
         />
       </Card>
 
-      {/* Modal to show delivery steps */}
       {selectedOrder && (
         <Modal
           title={`Delivery Steps for ${selectedOrder.title}`}
@@ -148,27 +143,17 @@ const AdminUpdate = () => {
               <List.Item>
                 <div style={{ display: 'flex', justifyContent: 'space-between', width: '100%' }}>
                   <div style={{ flex: '1 1 50%' }}>
-                    <List.Item.Meta
-                      title={step.step}
-                      description={step.description || 'No description available'}
-                    />
+                    <List.Item.Meta title={step.step} description={step.description || 'No description available'} />
                   </div>
                   <div style={{ flex: '1 1 50%', textAlign: 'right' }}>
-                    <Text style={{ textTransform: "capitalize"}}>
+                    <Text style={{ textTransform: "capitalize" }}>
                       Status: {step.status || 'Pending'}
                     </Text>
                     <br />
-                    <Text>Timestamp: {formatTimestamp(step.timestamp)}</Text>
                     {step.status === 'process' && (
-                      <div>
-                        <Button
-                          type="primary"
-                          onClick={() => handleUpdateStatus(index)}
-                          style={{ marginTop: '10px' }}
-                        >
-                          Mark as Finished
-                        </Button>
-                      </div>
+                      <Button type="primary" onClick={() => handleUpdateStatus(index)} style={{ marginTop: '10px' }}>
+                        Mark as Finished
+                      </Button>
                     )}
                   </div>
                 </div>
@@ -177,6 +162,51 @@ const AdminUpdate = () => {
           />
         </Modal>
       )}
+      <Modal
+          title="View Form"
+          open={isFormModalOpen}
+          onOk={() => setIsFormModalOpen(false)}
+          onCancel={() => setIsFormModalOpen(false)}
+          width={890}
+        >
+          {/* Render iframe with the dynamic URL */}
+          {currentFormUrl ? (
+            <iframe
+              src={currentFormUrl}
+              width="100%"
+              style={{ height: '70vh', maxHeight: 700 }}
+            ></iframe>
+          ) : (
+            <p>No form available for this order.</p>
+          )}
+        </Modal>,
+        <Modal 
+          title="Rate Order" 
+          open={isRatingModalOpen} 
+          onCancel={() => setIsRatingModalOpen(false)}
+          footer={[]}
+        >
+
+          <h3>{currentProduct ? currentProduct.title : null}</h3>
+          <div>
+            <h4>How would you rate your experience?</h4>
+            <Rate
+              value={currentProduct?.rating}
+              tooltips={["Poor", "Fair", "Good", "Very Good", "Excellent"]}
+              disabled
+            />
+          </div>
+
+          <div style={{ marginTop: 20 }}>
+            <h4>Leave a comment</h4>
+            <TextArea
+              rows={4}
+              placeholder="Share more about your experience..."
+              value={currentProduct?.comment}
+              readOnly
+            />
+          </div>
+        </Modal>
     </div>
   );
 };
