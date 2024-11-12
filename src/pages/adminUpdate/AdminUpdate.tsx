@@ -1,13 +1,76 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Button, Card, List, Typography, Modal } from 'antd';
-import orderData from '../../mockData';
 import moment from 'moment';
+import { fetchAllOrders, updateOrderStepStatus } from './api/AdminUpdateAPI';
+import { ProTable, ProColumns, ActionType } from '@ant-design/pro-components';
 
 const { Text } = Typography;
 
 const AdminUpdate = () => {
-  const [selectedOrder, setSelectedOrder] = useState<any>(null); // To track the selected order
+  const [selectedOrder, setSelectedOrder] = useState<any>(null);
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const actionRef = useRef<ActionType>();
+
+  const initialDeliverySteps = [
+    {
+      step: 'Ketua Pusat Pengajian IPSIS-FSG',
+      timestamp: "2024-09-22T08:00:00Z",
+      description: "3 Hari Bekerja",
+      status: null,
+    },
+    {
+      step: 'Pegawai Perolehan',
+      timestamp: "2024-09-23T12:00:00Z",
+      description: "5 Hari Bekerja",
+      status: null,
+    },
+    {
+      step: 'Pelawaan Vendor',
+      timestamp: null,
+      description: "2 Bulan",
+      status: null,
+    },
+    {
+      step: 'Kutipan',
+      status: "finish",
+      timestamp: null,
+      description: null,
+    },
+    {
+      step: 'Selesai',
+      status: null,
+      timestamp: null,
+      description: null,
+    }
+  ];
+
+  const [deliverySteps, setDeliverySteps] = useState(initialDeliverySteps);
+
+  const columns: ProColumns<any>[]  = [
+    {
+      title: 'Order Title',
+      dataIndex: 'title',
+      key: 'title',
+    },
+    {
+      title: "Options",
+      valueType: "option",
+      width: 200,
+      render: (text, record) => {
+        return [
+          <Button type="primary" onClick={() => handleShowSteps(record)} key="viewForm">
+            View Form
+          </Button>,
+        ];
+      },
+    },
+  ];
+
+  // useEffect(() => {
+  //   if (actionRef.current) {
+  //     actionRef.current.reload();
+  //   }
+  // }, []);
 
   // Handle opening the modal with selected order
   const handleShowSteps = (order: any) => {
@@ -31,7 +94,7 @@ const AdminUpdate = () => {
         setSelectedOrder({ ...selectedOrder, delivery_steps: updatedSteps });
       },
       onCancel: () => {
-        console.log('Cancelled'); // Optional: you can log or handle cancellation
+        console.log('Cancelled');
       },
     });
   };
@@ -41,22 +104,33 @@ const AdminUpdate = () => {
     return timestamp ? moment(timestamp).format('hh:mmA DD/MM/YYYY') : 'N/A';
   };
 
-
   return (
     <div style={{ padding: '20px' }}>
       <Card title="Admin Panel - Orders List">
-        <List
-          dataSource={orderData}
-          renderItem={(order) => (
-            <List.Item>
-              <List.Item.Meta
-                title={order.title}
-              />
-              <Button type="primary" onClick={() => handleShowSteps(order)}>
-                View Details
-              </Button>
-            </List.Item>
-          )}
+        <ProTable
+          actionRef={actionRef}
+          search={false}
+          cardBordered
+          request={async () => {
+            try {
+              const data = await fetchAllOrders();
+              return {
+                data: data.data,
+                success: true,
+                total: data.data.length, // Adjust if there's a different total count available
+              };
+            } catch (error) {
+              console.error("Error fetching orders:", error);
+              return {
+                data: [],
+                success: false,
+                total: 0,
+              };
+            }
+          }}
+          rowKey={(data) => data.id}
+          bordered
+          columns={columns}
         />
       </Card>
 
@@ -101,7 +175,6 @@ const AdminUpdate = () => {
               </List.Item>
             )}
           />
-
         </Modal>
       )}
     </div>
