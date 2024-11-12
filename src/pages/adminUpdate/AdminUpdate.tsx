@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react';
-import { Button, Card, List, Typography, Modal, Rate } from 'antd';
+import { Button, Card, List, Typography, Modal, Rate, message } from 'antd';
 import moment from 'moment';
 import { fetchAllOrders, updateOrderStepStatus } from './api/AdminUpdateAPI';
 import { ProTable, ProColumns, ActionType } from '@ant-design/pro-components';
@@ -70,21 +70,43 @@ const AdminUpdate = () => {
     setIsModalVisible(true);
   };
 
-  const handleUpdateStatus = (index: number) => {
-    Modal.confirm({
-      title: 'Confirm Mark as Finished',
-      content: 'Are you sure you want to mark this step as finished?',
-      onOk: () => {
-        const updatedSteps = selectedOrder.delivery_steps.map((step: any, idx: number) => {
-          if (idx === index && step.status === 'process') {
-            return { ...step, status: 'finish' };
+  const handleUpdateStatus = async () => {
+    const currentStep = selectedOrder.current_step;
+    const currentStepStatus = selectedOrder.current_step_status;
+  
+    if (currentStepStatus === null || currentStepStatus === 'process') {
+      Modal.confirm({
+        title: 'Confirm Mark as Finished',
+        content: 'Are you sure you want to mark this step as finished?',
+        onOk: async () => {
+          try {
+            const payload = {
+              data: {
+                current_step: currentStep + 1,
+              }
+            }
+            // Call API to update the current step
+            const response = await updateOrderStepStatus(selectedOrder.id, payload);
+            console.log(response.data)
+            if (response) {
+              const updatedSteps = selectedOrder.delivery_steps.map((step: any, idx: any) => {
+                if (idx < currentStep) return { ...step, status: 'finish' };
+                if (idx === currentStep) return { ...step, status: 'finish' };
+                return step;
+              });
+    
+              setSelectedOrder({ ...selectedOrder, delivery_steps: updatedSteps, current_step: currentStep + 1 });
+              setIsModalVisible(false)
+              message.success(`Successfully marked as finished`);
+              actionRef.current?.reload();
+            }
+          } catch (error) {
+            console.error("Error updating order step:", error);
           }
-          return step;
-        });
-        setSelectedOrder({ ...selectedOrder, delivery_steps: updatedSteps });
-      },
-      onCancel: () => console.log('Cancelled'),
-    });
+        },
+        onCancel: () => console.log('Cancelled'),
+      });
+    }
   };
 
   const showFormModal = (src: any) => {
@@ -138,19 +160,21 @@ const AdminUpdate = () => {
         >
           <List
             dataSource={selectedOrder.delivery_steps}
-            renderItem={(step: any, index: number) => (
+            renderItem={(step: any, index: any) => (
               <List.Item>
                 <div style={{ display: 'flex', justifyContent: 'space-between', width: '100%' }}>
                   <div style={{ flex: '1 1 50%' }}>
                     <List.Item.Meta title={step.step} description={step.description || 'No description available'} />
                   </div>
                   <div style={{ flex: '1 1 50%', textAlign: 'right' }}>
-                    <Text style={{ textTransform: "capitalize" }}>
-                      Status: {step.status || 'Pending'}
-                    </Text>
+                    <Text>Status: {step.status || 'Pending'}</Text>
                     <br />
-                    {step.status === 'process' && (
-                      <Button type="primary" onClick={() => handleUpdateStatus(index)} style={{ marginTop: '10px' }}>
+                    {index === selectedOrder.current_step && step.status === 'process' && step.step !== 'Kutipan' && (
+                      <Button
+                        type="primary"
+                        onClick={() => handleUpdateStatus()}
+                        style={{ marginTop: '10px' }}
+                      >
                         Mark as Finished
                       </Button>
                     )}
