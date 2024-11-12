@@ -13,8 +13,11 @@ import RolesList from "../pages/roles/RolesList";
 import Roles from "../pages/roles/view/Roles";
 import UserManagement from "../pages/userManagement/UserManagement";
 import UserAdd from "../pages/userManagement/view/User";
+import Cookies from 'js-cookie';
 
 export default function RouteList() {
+  const isModerator = Cookies.get('isModerator') === 'true';
+
   const handleAdminRoutes = () => (
     <>
       <Route path="/" element={<Dashboard />} />
@@ -23,28 +26,32 @@ export default function RouteList() {
       <Route path="/home" element={<Home />} />
       <Route path="/admin-update" element={<AdminUpdate />} />
       <Route path="/products" element={<Products />} />
-      <Route path="/products/new" element={<ProductAddNew />} />
+      {/* <Route path="/products/new" element={<ProductAddNew />} />
       <Route path="/products/:id" element={<ProductDetails />} />
       <Route path="/users" element={<UserManagement />} />
       <Route path="/users/:id" element={<UserAdd />} />
       <Route path="/permissions" element={<PermissionList />} />
       <Route path="/permissions/:id" element={<Permission />} />
       <Route path="/roles" element={<RolesList />} />
-      <Route path="/roles/:id" element={<Roles />} />
+      <Route path="/roles/:id" element={<Roles />} /> */}
+    </>
+  );
+
+  const handleModeratorRoutes = () => (
+    <>
+      {/* <Route path="/" element={<Dashboard />} /> */}
+      <Route path="/admin-update" element={<AdminUpdate />} />
     </>
   );
 
   // TODO modify when API implementation is done
-  const handleRolesRoutes = (roles: string) => {
-    switch (roles) {
-      case "operator":
-        return NotFoundPage();
-      case "admin":
-        return handleAdminRoutes();
-      default:
-        return NotFoundPage();
+  const handleRolesRoutes = (roles: boolean) => {
+    if (roles) {
+      return handleModeratorRoutes()
+    } else {
+      return handleAdminRoutes()
     }
   };
 
-  return <Routes>{handleRolesRoutes("admin")}</Routes>;
+  return <Routes>{handleRolesRoutes(isModerator)}</Routes>;
 }

@@ -2,6 +2,7 @@ import Cookies from "js-cookie";
 
 type TUserSession = {
   rememberme: boolean;
+  isModerator: boolean;
   jwt: string; // JWT token
   user: {
     id: number;
@@ -18,10 +19,11 @@ type TUserSession = {
 };
 
 // Save JWT and user into cookies with expiry (30 days if remember me is checked)
-export const setUserSession = ({ rememberme, jwt, user }: TUserSession) => {
+export const setUserSession = ({ rememberme, jwt, user, isModerator }: TUserSession) => {
   Cookies.set("user", JSON.stringify(user), { expires: rememberme ? 30 : 1 });
   Cookies.set("jwt", jwt, { expires: rememberme ? 30 : 1 });
   Cookies.set("rememberme", String(rememberme), { expires: rememberme ? 30 : 1 });
+  Cookies.set('isModerator', String(isModerator), { expires: rememberme ? 7 : undefined });
   return true;
 };
 
@@ -30,6 +32,7 @@ export const deleteUserSession = () => {
   Cookies.remove("user");
   Cookies.remove("jwt");
   Cookies.remove("rememberme");
+  Cookies.remove("isModerator");
   return true;
 };
 

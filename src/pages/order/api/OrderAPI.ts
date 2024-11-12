@@ -29,3 +29,8 @@ export const rateOrder = async (order: any) => {
       throw error; // Re-throw the error if needed
     }
 };
+
+// API call function to delete an order by ID
+export const deleteOrderApi = async (id: any) => {
+  return await apiRequest("DELETE", `/api/orders/${id}`);
+};

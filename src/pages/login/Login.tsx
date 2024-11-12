@@ -34,6 +34,7 @@ const LoginPage = () => {
         rememberme: data.rememberme,
         jwt: userDetail.jwt, // Passing JWT token directly
         user: userDetail.user, // Passing user details
+        isModerator: userDetail.user.isModerator,  // Store isModerator flag
       });
   
       if (setUser === true) {

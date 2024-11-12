@@ -4,7 +4,7 @@ import { ProTable, ProColumns, ActionType } from "@ant-design/pro-components";
 import { IProduct } from "../products/type/ProductType";
 import { updateProduct } from "../products/api/ProductAPI";
 import Stepper from "./Stepper/Stepper";
-import { getProductDetails, rateOrder, getOrders, updateOrder } from "./api/OrderAPI";
+import { getProductDetails, rateOrder, getOrders, updateOrder, deleteOrderApi } from "./api/OrderAPI";
 
 const { TextArea } = Input;
 
@@ -77,11 +77,6 @@ const Order = () => {
     setCurrentProduct(record);
     updateDeliverySteps(record.current_step, record.current_step_status);
     setIsModalOpen(true);
-    console.log(deliverySteps)
-    // setIsLoading(true);
-    // setTimeout(() => {
-    //   setIsLoading(false);
-    // }, 1000);
   };
 
   const showFormModal = (src: any) => {
@@ -172,6 +167,27 @@ const Order = () => {
     }
   };
 
+    // Function to show a confirmation modal for deleting an order
+    const deleteOrder = (id: any) => {
+      Modal.confirm({
+        title: 'Are you sure you want to cancel this order?',
+        content: 'This action cannot be undone.',
+        okText: 'Yes',
+        okType: 'danger',
+        cancelText: 'No',
+        onOk: async () => {
+          try {
+            await deleteOrderApi(id);
+            message.success('Order deleted successfully');
+            actionRef.current?.reload();
+          } catch (error) {
+            message.error('Failed to delete order');
+            console.error(error);
+          }
+        },
+      });
+    };
+
   const columns: ProColumns<any>[] = [
     {
       title: "No",
@@ -211,6 +227,9 @@ const Order = () => {
               Rate
             </Button>
           ),
+          <Button danger onClick={() => deleteOrder(record.id)}>
+            Cancel
+          </Button>
         ];
       },
     },

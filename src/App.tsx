@@ -36,15 +36,15 @@ const App = () => {
             <Route path="/home" element={<Home />} />
             <Route path="/order" element={<Order />} />
             <Route path="/admin-update" element={<AdminUpdate />} />
-            <Route path="/products" element={<Users />} />
-            <Route path="/products/:id" element={<ProductDetails />} />
-            <Route path="/products/new" element={<ProductAddNew />} />
-            <Route path="/users" element={<UserManagement />} />
-            <Route path="/users/:id" element={<UserAdd />} />
-            <Route path="/permissions" element={<PermissionList />} />
-            <Route path="/permissions/:id" element={<Permission />} />
-            <Route path="/roles" element={<RolesList />} />
-            <Route path="/roles/:id" element={<Roles />} />
+            {/* <Route path="/products" element={<Users />} /> */}
+            {/* <Route path="/products/:id" element={<ProductDetails />} /> */}
+            {/* <Route path="/products/new" element={<ProductAddNew />} /> */}
+            {/* <Route path="/users" element={<UserManagement />} /> */}
+            {/* <Route path="/users/:id" element={<UserAdd />} /> */}
+            {/* <Route path="/permissions" element={<PermissionList />} /> */}
+            {/* <Route path="/permissions/:id" element={<Permission />} /> */}
+            {/* <Route path="/roles" element={<RolesList />} /> */}
+            {/* <Route path="/roles/:id" element={<Roles />} /> */}
           </Route>
         </Routes>
       </BrowserRouter>
