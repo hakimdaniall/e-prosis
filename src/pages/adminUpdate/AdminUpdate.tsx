@@ -26,7 +26,30 @@ const AdminUpdate = () => {
   ];
 
   const columns: ProColumns<any>[] = [
+    { 
+      title: 'Order Created', 
+      dataIndex: 'createdAt', 
+      key: 'createdAt',
+      render: (text, record) => {
+        const date = new Date(record.createdAt);
+        const hours = String(date.getHours()).padStart(2, '0');
+        const minutes = String(date.getMinutes()).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const year = date.getFullYear();
+        // return `${hours}:${minutes} ${day}/${month}/${year}`;
+        return `${day}/${month}/${year}`;
+      }
+    },
     { title: 'Order Title', dataIndex: 'title', key: 'title' },
+    { 
+      title: 'Submitted By', 
+      dataIndex: 'username', 
+      key: 'username',
+      render: (text, record) => {
+        return record['user']['username']
+      }
+    },
     {
       title: "Options",
       valueType: "option",
@@ -42,7 +65,7 @@ const AdminUpdate = () => {
             View Details
           </Button>,
           rating && comment && (
-          <Button type="primary" onClick={() => handleShowRating(record)} key="viewRating">
+          <Button onClick={() => handleShowRating(record)} key="viewRating">
             View Rating
           </Button>
           )
