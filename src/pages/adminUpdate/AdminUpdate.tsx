@@ -17,7 +17,6 @@ const AdminUpdate = () => {
 
   const actionRef = useRef<ActionType>();
 
-  // Define the initial steps without any status
   const initialDeliverySteps = [
     { step: 'Ketua Pusat Pengajian IPSIS-FSG', description: '3 Hari Bekerja', status: null },
     { step: 'Pegawai Perolehan', description: '5 Hari Bekerja', status: null },
@@ -169,7 +168,6 @@ const AdminUpdate = () => {
           onCancel={() => setIsFormModalOpen(false)}
           width={890}
         >
-          {/* Render iframe with the dynamic URL */}
           {currentFormUrl ? (
             <iframe
               src={currentFormUrl}
