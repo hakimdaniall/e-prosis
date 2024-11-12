@@ -54,11 +54,12 @@ const AdminUpdate = () => {
 
   // Initialize the delivery steps based on `current_step` and `current_step_status`
   const initializeSteps = (order: any) => {
+    const currentStep = order.current_step || 1; // Ensure current step starts from 1
     return initialDeliverySteps.map((step, idx) => {
-      if (idx < order.current_step) {
+      if (idx < currentStep - 1) {
         return { ...step, status: 'finish' };
-      } else if (idx === order.current_step) {
-        return { ...step, status: order.current_step_status };
+      } else if (idx === currentStep - 1) {
+        return { ...step, status: order.current_step_status || 'process' };
       }
       return step;
     });
@@ -66,7 +67,7 @@ const AdminUpdate = () => {
 
   const handleShowSteps = (order: any) => {
     const initializedSteps = initializeSteps(order);
-    setSelectedOrder({ ...order, delivery_steps: initializedSteps });
+    setSelectedOrder({ ...order, current_step: order.current_step || 1, delivery_steps: initializedSteps });
     setIsModalVisible(true);
   };
 
@@ -84,19 +85,17 @@ const AdminUpdate = () => {
               data: {
                 current_step: currentStep + 1,
               }
-            }
-            // Call API to update the current step
+            };
             const response = await updateOrderStepStatus(selectedOrder.id, payload);
-            console.log(response.data)
             if (response) {
               const updatedSteps = selectedOrder.delivery_steps.map((step: any, idx: any) => {
-                if (idx < currentStep) return { ...step, status: 'finish' };
-                if (idx === currentStep) return { ...step, status: 'finish' };
+                if (idx < currentStep - 1) return { ...step, status: 'finish' };
+                if (idx === currentStep - 1) return { ...step, status: 'finish' };
                 return step;
               });
     
               setSelectedOrder({ ...selectedOrder, delivery_steps: updatedSteps, current_step: currentStep + 1 });
-              setIsModalVisible(false)
+              setIsModalVisible(false);
               message.success(`Successfully marked as finished`);
               actionRef.current?.reload();
             }
@@ -169,7 +168,7 @@ const AdminUpdate = () => {
                   <div style={{ flex: '1 1 50%', textAlign: 'right' }}>
                     <Text>Status: {step.status || 'Pending'}</Text>
                     <br />
-                    {index === selectedOrder.current_step && step.status === 'process' && step.step !== 'Kutipan' && (
+                    {index === selectedOrder.current_step - 1 && step.status === 'process' && step.step !== 'Kutipan' && (
                       <Button
                         type="primary"
                         onClick={() => handleUpdateStatus()}
@@ -185,50 +184,38 @@ const AdminUpdate = () => {
           />
         </Modal>
       )}
-      <Modal
-          title="View Form"
-          open={isFormModalOpen}
-          onOk={() => setIsFormModalOpen(false)}
-          onCancel={() => setIsFormModalOpen(false)}
-          width={890}
-        >
-          {currentFormUrl ? (
-            <iframe
-              src={currentFormUrl}
-              width="100%"
-              style={{ height: '70vh', maxHeight: 700 }}
-            ></iframe>
-          ) : (
-            <p>No form available for this order.</p>
-          )}
-        </Modal>,
-        <Modal 
-          title="Rate Order" 
-          open={isRatingModalOpen} 
-          onCancel={() => setIsRatingModalOpen(false)}
-          footer={[]}
-        >
-
-          <h3>{currentProduct ? currentProduct.title : null}</h3>
-          <div>
-            <h4>How would you rate your experience?</h4>
-            <Rate
-              value={currentProduct?.rating}
-              tooltips={["Poor", "Fair", "Good", "Very Good", "Excellent"]}
-              disabled
-            />
-          </div>
-
-          <div style={{ marginTop: 20 }}>
-            <h4>Leave a comment</h4>
-            <TextArea
-              rows={4}
-              placeholder="Share more about your experience..."
-              value={currentProduct?.comment}
-              readOnly
-            />
-          </div>
-        </Modal>
+      <Modal title="View Form" open={isFormModalOpen} onOk={() => setIsFormModalOpen(false)} onCancel={() => setIsFormModalOpen(false)} width={890}>
+        {currentFormUrl ? (
+          <iframe src={currentFormUrl} width="100%" style={{ height: '70vh', maxHeight: 700 }}></iframe>
+        ) : (
+          <p>No form available for this order.</p>
+        )}
+      </Modal>
+      <Modal 
+        title="Order Rating and Feedback" 
+        open={isRatingModalOpen} 
+        onCancel={() => setIsRatingModalOpen(false)}
+        footer={[]}
+      >
+        <h3>{currentProduct ? currentProduct.title : "Order Details"}</h3>
+        <div>
+          <h4>Customer Rating</h4>
+          <Rate 
+            value={currentProduct?.rating} 
+            tooltips={["Poor", "Fair", "Good", "Very Good", "Excellent"]} 
+            disabled
+          />
+        </div>
+        <div style={{ marginTop: 20 }}>
+          <h4>Customer Comment</h4>
+          <TextArea 
+            rows={4} 
+            placeholder="No comment available" 
+            value={currentProduct?.comment || "No comment provided."} 
+            readOnly 
+          />
+        </div>
+      </Modal>
     </div>
   );
 };
