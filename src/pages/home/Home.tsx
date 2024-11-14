@@ -4,6 +4,8 @@ import { UploadOutlined } from '@ant-design/icons';
 import { submitOrderForm } from './api/HomeAPI';
 import UploadComponent from './Upload';
 
+const CartaAlir = "/carta-alir.pdf";
+
 // Chemical Inventory Component
 const ChemicalInventory = () => {
   const chemicalData = [
@@ -55,7 +57,7 @@ const ProcedureFlowchart = () => {
         width={800}
       >
         <iframe 
-          src="https://pii.or.id/uploads/dummies.pdf" 
+          src={CartaAlir} 
           width={100}
           style={{ width: '100%', height: '100vh', maxHeight: 700 }}
           title="Flowchart PDF"
@@ -68,7 +70,7 @@ const ProcedureFlowchart = () => {
 // Purchase Form Component
 const PurchaseForm = () => {
   const downloadForm = () => {
-    window.open('https://pii.or.id/uploads/dummies.pdf');
+    window.open(process.env.REACT_APP_API_HOST + '/uploads/borang_tempahan_46b558d32f.pdf');
   };
 
   const terms = [
