@@ -83,7 +83,6 @@ const LoginPage = () => {
               <Controller
                 name="email"
                 control={control}
-                defaultValue="student2@test.com"
                 render={({ field }) => <Input placeholder="Email" {...field} />}
               />
             </Form.Item>
@@ -97,7 +96,6 @@ const LoginPage = () => {
               <Controller
                 name="password"
                 control={control}
-                defaultValue="Test1234"
                 render={({ field }) => (
                   <Input.Password placeholder="Password" {...field} />
                 )}
