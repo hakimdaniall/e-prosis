@@ -19,7 +19,7 @@ export const submitOrderForm = async (title: string, file: File) => {
 
     // Make the API call with FormData
     const response = await axios.post(
-      "http://localhost:1337/api/orders",
+      process.env.REACT_APP_API_HOST + "/api/orders",
       formData,
       {
         headers: {

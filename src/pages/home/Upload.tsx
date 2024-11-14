@@ -74,7 +74,7 @@ const UploadComponent = () => {
     }
 
     try {
-      const response = await axios.post('http://localhost:1337/api/upload', formData, {
+      const response = await axios.post(process.env.REACT_APP_API_HOST + '/api/upload', formData, {
         headers: {
           'Authorization': `Bearer ${token}`, // Replace with your actual JWT token
           'Content-Type': 'multipart/form-data',
@@ -104,7 +104,7 @@ const UploadComponent = () => {
     }
 
     try {
-      const response = await axios.post('http://localhost:1337/api/orders', orderData, {
+      const response = await axios.post(process.env.REACT_APP_API_HOST + '/api/orders', orderData, {
         headers: {
           'Authorization': `Bearer ${token}`, // Replace with your actual JWT token
           'Content-Type': 'application/json',
