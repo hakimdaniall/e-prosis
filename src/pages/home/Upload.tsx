@@ -13,7 +13,7 @@ const UploadComponent = () => {
   const [fileList, setFileList] = useState<FileWithOrigin[]>([]); // Define the type for fileList
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [fileId, setFileId] = useState<number | null>(null); // To store the uploaded file's ID
-
+  const [isLoading, setIsLoading] = useState(false)
   const [form] = Form.useForm(); // Initialize the form instance
 
   // Handle file selection
@@ -30,7 +30,7 @@ const UploadComponent = () => {
   // Handle confirm upload and create order
   const handleOk = async () => {
     setIsModalVisible(false);
-
+    setIsLoading(true)
     if (fileList.length > 0) {
       const file = fileList[0]?.originFileObj; // Get the first file from the list
       try {
@@ -47,6 +47,7 @@ const UploadComponent = () => {
           message.success('File submitted successfully');
           form.resetFields(); // Reset form fields after submission
           setFileList([]); // Clear file list after submission
+          setIsLoading(false)
         } else {
           message.error('Error: File upload failed');
         }
@@ -80,6 +81,7 @@ const UploadComponent = () => {
           'Content-Type': 'multipart/form-data',
         },
       });
+
       return response.data;
     } catch (error) {
       console.error('Error uploading file:', error);
@@ -159,7 +161,11 @@ const UploadComponent = () => {
         </Form.Item>
 
         <Form.Item>
-          <Button type="primary" htmlType="submit" style={{ marginTop: '10px' }}>
+          <Button 
+          type="primary" 
+          htmlType="submit" 
+          style={{ marginTop: '10px' }}
+          loading={isLoading}>
             Submit
           </Button>
         </Form.Item>

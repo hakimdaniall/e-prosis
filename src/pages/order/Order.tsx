@@ -276,6 +276,7 @@ const Order = () => {
           {/* Render iframe with the dynamic URL */}
           {currentFormUrl ? (
             <iframe
+              key={currentFormUrl}
               src={currentFormUrl}
               width="100%"
               style={{ height: '70vh', maxHeight: 700 }}
