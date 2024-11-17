@@ -6,6 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { RegisterSchema, IRegister } from "./type/registerType";
 import { createAccount } from "./api/RegisterAPI";
 import { create } from "domain";
+import bgImage from "../../assets/images/uitm-bg.jpg";
 
 const RegisterPage = () => {
   const navigate = useNavigate();
@@ -37,7 +38,8 @@ const RegisterPage = () => {
         justifyContent: "center",
         alignItems: "center",
         height: "100vh",
-        backgroundColor: "#f0eada",
+        // backgroundColor: "#f0eada",
+        backgroundImage: `url(${bgImage})`,
       }}
     >
       <Card title="Create Your Account" style={{ width: 350 }}>

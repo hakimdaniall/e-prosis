@@ -18,7 +18,7 @@ code {
     #024567 0%,
     rgba(2, 69, 103, 0) 100%
   ) !important;
-  border-right: 2px solid #35e49d !important;
+  border-right: 2px solid rgba(89, 66, 115) !important;
 }
 
 .ant-pro-card {

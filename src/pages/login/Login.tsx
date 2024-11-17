@@ -6,7 +6,8 @@ import { useForm, Controller } from "react-hook-form";
 import { setUserSession } from "../../utils/AuthService";
 import { ILogin, LoginSchema } from "./type/loginType";
 import { login } from "./api/LoginAPI";
-import bgImage from "../../assets/images/hero-banner-ygt-1.jpg";
+import bgImage from "../../assets/images/uitm-bg.jpg";
+
 import logo from "../../assets/images/ygt-logo.png";
 const LoginPage = () => {
   const navigate = useNavigate();
@@ -54,8 +55,8 @@ const LoginPage = () => {
         justifyContent: "center",
         alignItems: "center",
         height: "100vh",
-        // backgroundImage: `url(${bgImage})`,
-        backgroundColor: "rgb(240, 234, 218)",
+        backgroundImage: `url(${bgImage})`,
+        // backgroundColor: "rgb(240, 234, 218)",
         backgroundSize: "cover",
         backgroundRepeat: "no-repeat",
       }}
