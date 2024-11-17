@@ -45,8 +45,8 @@ export default function RouteList() {
   );
 
   // TODO modify when API implementation is done
-  const handleRolesRoutes = (roles: boolean) => {
-    if (roles) {
+  const handleRolesRoutes = (userIsModerator: boolean) => {
+    if (userIsModerator) {
       return handleModeratorRoutes()
     } else {
       return handleAdminRoutes()
