@@ -30,26 +30,30 @@ const AdminUpdate = () => {
       title: 'Order Created', 
       dataIndex: 'createdAt', 
       key: 'createdAt',
+      width: 150,
       render: (text, record) => {
         const date = new Date(record.createdAt);
-        const hours = String(date.getHours()).padStart(2, '0');
+        let hours = date.getHours();
         const minutes = String(date.getMinutes()).padStart(2, '0');
         const day = String(date.getDate()).padStart(2, '0');
         const month = String(date.getMonth() + 1).padStart(2, '0');
         const year = date.getFullYear();
-        // return `${hours}:${minutes} ${day}/${month}/${year}`;
-        return `${day}/${month}/${year}`;
+        
+        const isPM = hours >= 12;
+        hours = hours % 12 || 12; // Convert to 12-hour format and handle midnight as 12
+        return `${hours}:${minutes}${isPM ? 'PM' : 'AM'} ${day}/${month}/${year}`;
       }
     },
-    { title: 'Order Title', dataIndex: 'title', key: 'title' },
     { 
       title: 'Submitted By', 
       dataIndex: 'username', 
       key: 'username',
+      width: 200,
       render: (text, record) => {
         return record['user']['username']
       }
     },
+    { title: 'Order Title', dataIndex: 'title', key: 'title' },
     {
       title: "Options",
       valueType: "option",
