@@ -87,7 +87,7 @@ const DashboardLayout = ({ children }: TDashboardLayout) => {
         theme="light"
         breakpoint="lg"
         collapsedWidth="0"
-        style={{ minHeight: "100vh", backgroundColor: "#023047" }}
+        style={{ minHeight: "100vh", backgroundColor: "#023047", paddingTop: 20 }}
       >
         <Link
           style={{

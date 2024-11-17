@@ -22,9 +22,9 @@ root.render(
       components: {
         // Button theme
         Button: {
-          colorPrimary: "rgba(89, 66, 115)",
+          colorPrimary: "#FFBA00",
           borderRadius: 27,
-          colorPrimaryHover: "rgba(89, 66, 115, 0.7)",
+          colorPrimaryHover: "rgba(255, 186, 0, .7)",
         },
 
         Layout: {

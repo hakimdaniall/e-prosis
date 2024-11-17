@@ -54,11 +54,10 @@ const ProcedureFlowchart = () => {
         open={isModalVisible} 
         onCancel={handleCancel} 
         footer={null} 
-        width={800}
+        width={890}
       >
         <iframe 
           src={CartaAlir} 
-          width={100}
           style={{ width: '100%', height: '100vh', maxHeight: 700 }}
           title="Flowchart PDF"
         />
