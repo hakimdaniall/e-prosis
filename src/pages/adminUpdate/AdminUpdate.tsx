@@ -213,7 +213,12 @@ const AdminUpdate = () => {
       )}
       <Modal title="View Form" open={isFormModalOpen} onOk={() => setIsFormModalOpen(false)} onCancel={() => setIsFormModalOpen(false)} width={890}>
         {currentFormUrl ? (
-          <iframe src={currentFormUrl} width="100%" style={{ height: '70vh', maxHeight: 700 }}></iframe>
+          <iframe 
+          key={currentFormUrl} 
+          src={currentFormUrl} 
+          width="100%" 
+          style={{ height: '70vh', maxHeight: 700 }}
+          ></iframe>
         ) : (
           <p>No form available for this order.</p>
         )}
