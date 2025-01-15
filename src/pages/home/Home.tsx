@@ -5,6 +5,7 @@ import { submitOrderForm } from './api/HomeAPI';
 import UploadComponent from './Upload';
 
 const CartaAlir = "/carta-alir.pdf";
+const BorangTempahan = "/borang-tempahan.pdf";
 
 // Chemical Inventory Component
 const ChemicalInventory = () => {
@@ -69,7 +70,7 @@ const ProcedureFlowchart = () => {
 // Purchase Form Component
 const PurchaseForm = () => {
   const downloadForm = () => {
-    window.open(process.env.REACT_APP_API_HOST + '/uploads/borang_tempahan_46b558d32f.pdf');
+    window.open(BorangTempahan);
   };
 
   const terms = [
