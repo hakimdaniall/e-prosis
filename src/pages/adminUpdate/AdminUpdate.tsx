@@ -102,7 +102,7 @@ const AdminUpdate = () => {
     const currentStep = selectedOrder.current_step;
     const currentStepStatus = selectedOrder.current_step_status;
   
-    if (currentStepStatus === null || currentStepStatus === 'process') {
+    if (currentStepStatus === null || currentStepStatus === 'process' || currentStepStatus === 'error') {
       Modal.confirm({
         title: 'Confirm Mark as Finished',
         content: 'Are you sure you want to mark this step as finished?',
@@ -111,6 +111,7 @@ const AdminUpdate = () => {
             const payload = {
               data: {
                 current_step: currentStep + 1,
+                current_step_status: 'process'
               }
             };
             const response = await updateOrderStepStatus(selectedOrder.id, payload);
@@ -133,6 +134,42 @@ const AdminUpdate = () => {
         onCancel: () => console.log('Cancelled'),
       });
     }
+  };
+
+  const handleRejectOrder = async () => {
+    const currentStep = selectedOrder.current_step;
+    
+    Modal.confirm({
+      title: 'Confirm Rejection',
+      content: 'Are you sure you want to reject this order?',
+      okText: 'Yes, Reject',
+      okButtonProps: { danger: true },
+      onOk: async () => {
+        try {
+          const payload = {
+            data: {
+              current_step: currentStep,
+              current_step_status: 'error',
+            }
+          };
+          const response = await updateOrderStepStatus(selectedOrder.id, payload);
+          if (response) {
+            const updatedSteps = selectedOrder.delivery_steps.map((step: any, idx: any) => {
+              if (idx === currentStep - 1) return { ...step, status: 'error' };
+              return step;
+            });
+  
+            setSelectedOrder({ ...selectedOrder, delivery_steps: updatedSteps, current_step_status: 'rejected' });
+            setIsModalVisible(false);
+            message.success(`Order has been rejected`);
+            actionRef.current?.reload();
+          }
+        } catch (error) {
+          console.error("Error rejecting order:", error);
+        }
+      },
+      onCancel: () => console.log('Cancelled'),
+    });
   };
 
   const showFormModal = (src: any) => {
@@ -193,16 +230,26 @@ const AdminUpdate = () => {
                     <List.Item.Meta title={step.step} description={step.description || 'No description available'} />
                   </div>
                   <div style={{ flex: '1 1 50%', textAlign: 'right' }}>
-                    <Text>Status: {step.status || 'Pending'}</Text>
+                    <Text>Status: {step.status === 'error' ? 'Rejected' : step.status || 'Pending'}</Text>
                     <br />
-                    {index === selectedOrder.current_step - 1 && step.status === 'process' && step.step !== 'Kutipan' && (
-                      <Button
-                        type="primary"
-                        onClick={() => handleUpdateStatus()}
-                        style={{ marginTop: '10px' }}
-                      >
-                        Mark as Finished
-                      </Button>
+                    {index === selectedOrder.current_step - 1 && (step.status === 'process' || step.status === 'error') && step.step !== 'Kutipan' && (
+                      <div style={{ marginTop: '10px' }}>
+                        <Button
+                          type="primary"
+                          onClick={() => handleUpdateStatus()}
+                          style={{ marginRight: '10px' }}
+                        >
+                          Approve
+                        </Button>
+                        {step.status !== 'error' && (
+                          <Button
+                            danger
+                            onClick={() => handleRejectOrder()}
+                        >
+                          Reject
+                        </Button>
+                        )}
+                      </div>
                     )}
                   </div>
                 </div>
