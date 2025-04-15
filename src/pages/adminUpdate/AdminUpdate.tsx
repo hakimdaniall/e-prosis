@@ -232,8 +232,8 @@ const AdminUpdate = () => {
                   <div style={{ flex: '1 1 50%', textAlign: 'right' }}>
                     <Text>Status: {step.status === 'error' ? 'Rejected' : step.status || 'Pending'}</Text>
                     <br />
-                    {index === selectedOrder.current_step - 1 && (step.status === 'process' || step.status === 'error') && step.step !== 'Kutipan' && (
-                      <div style={{ marginTop: '10px' }}>
+                    <div style={{ marginTop: '10px' }}>
+                      {index === selectedOrder.current_step - 1 && (step.status === 'process') && step.step !== 'Kutipan' && (
                         <Button
                           type="primary"
                           onClick={() => handleUpdateStatus()}
@@ -241,16 +241,16 @@ const AdminUpdate = () => {
                         >
                           Approve
                         </Button>
-                        {step.status !== 'error' && (
-                          <Button
-                            danger
-                            onClick={() => handleRejectOrder()}
+                      )}
+                      {index === selectedOrder.current_step - 1  && step.status !== 'error' && step.step === 'Ketua Pusat Pengajian IPSIS-FSG' && (
+                        <Button
+                          danger
+                          onClick={() => handleRejectOrder()}
                         >
                           Reject
                         </Button>
-                        )}
+                      )}
                       </div>
-                    )}
                   </div>
                 </div>
               </List.Item>
