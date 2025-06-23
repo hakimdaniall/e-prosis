@@ -1,4 +1,4 @@
-import React from "react";
+// import React from "react";
 import { ConfigProvider } from "antd";
 import en_US from "antd/locale/en_US";
 import ReactDOM from "react-dom/client";
@@ -11,7 +11,7 @@ const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement,
 );
 
-const primaryButtonColor = "#FF0000";
+// const primaryButtonColor = "#FF0000";
 root.render(
   <ConfigProvider
     locale={en_US}

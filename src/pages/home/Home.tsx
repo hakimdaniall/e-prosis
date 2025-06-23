@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Modal, Button, Table, List, Card, Row, Col, Upload, message, Input } from 'antd';
 import { UploadOutlined } from '@ant-design/icons';
-import { submitOrderForm } from './api/HomeAPI';
+import { getGoogleDriveLink, submitOrderForm } from './api/HomeAPI';
 import UploadComponent from './Upload';
 
 const CartaAlir = "/carta-alir.pdf";
@@ -9,22 +9,34 @@ const BorangTempahan = "/borang-tempahan.pdf";
 
 // Chemical Inventory Component
 const ChemicalInventory = () => {
-  const chemicalData = [
-    { name: 'Chemical A', location: 'https://www.google.com' },
-    { name: 'Chemical B', location: 'https://www.google.com' },
-    { name: 'Chemical C', location: 'https://www.google.com' },
+ 
+  const [googleDrinkLink, setGoogleDrinkLink] = useState<any | null>(null);
+
+   const chemicalData = [
+    { name: 'FSG', location: googleDrinkLink },
+    // { name: 'Chemical B', location: 'https://www.google.com' },
+    // { name: 'Chemical C', location: 'https://www.google.com' },
   ];
+  useEffect(() => {
+    const fetchData = async () => {
+      const response = await getGoogleDriveLink();
+      setGoogleDrinkLink(response.data.data.link);
+    };
+
+    fetchData();
+  }, []);
 
   return (
     <div>
       <Table
         dataSource={chemicalData}
         columns={[
-          { title: 'Chemical Name', dataIndex: 'name', key: 'name' },
+          { title: 'Storage', dataIndex: 'name', key: 'name' },
           { title: 'Storage Location', dataIndex: 'location', key: 'location', 
             render: (text) => <a href={text} target="_blank" rel="noopener noreferrer">View Location</a> },
         ]}
         rowKey="name"
+        pagination={false}
       />
     </div>
   );

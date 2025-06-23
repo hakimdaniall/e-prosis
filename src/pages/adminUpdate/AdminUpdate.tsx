@@ -18,10 +18,10 @@ const AdminUpdate = () => {
   const actionRef = useRef<ActionType>();
 
   const initialDeliverySteps = [
-    { step: 'Ketua Pusat Pengajian IPSIS-FSG', description: '3 Hari Bekerja', status: null },
+    { step: 'Ketua Pusat Pengajian FSG', description: '3 Hari Bekerja', status: null },
     { step: 'Pegawai Perolehan', description: '5 Hari Bekerja', status: null },
-    { step: 'Pelawaan Vendor', description: '2 Bulan', status: null },
-    { step: 'Kutipan', description: null, status: null },
+    // { step: 'Pelawaan Vendor', description: '2 Bulan', status: null },
+    { step: 'Kutipan', description: "5 Hari Bekerja", status: null },
     { step: 'Selesai', description: null, status: null },
   ];
 
@@ -50,6 +50,9 @@ const AdminUpdate = () => {
       key: 'username',
       width: 200,
       render: (text, record) => {
+        if (!record.user || !record.user.username) {
+          return 'Unknown User';
+        }
         return record['user']['username']
       }
     },
@@ -216,7 +219,7 @@ const AdminUpdate = () => {
 
       {selectedOrder && (
         <Modal
-          title={`Delivery Steps for ${selectedOrder.title}`}
+          title={`Tracking Order: ${selectedOrder.title}`}
           open={isModalVisible}
           onCancel={() => setIsModalVisible(false)}
           footer={null}
@@ -242,7 +245,7 @@ const AdminUpdate = () => {
                           Approve
                         </Button>
                       )}
-                      {index === selectedOrder.current_step - 1  && step.status !== 'error' && step.step === 'Ketua Pusat Pengajian IPSIS-FSG' && (
+                      {index === selectedOrder.current_step - 1  && step.status !== 'error' && step.step === 'Ketua Pusat Pengajian FSG' && (
                         <Button
                           danger
                           onClick={() => handleRejectOrder()}

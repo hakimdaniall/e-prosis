@@ -24,7 +24,7 @@ const Order = () => {
 
   const initialDeliverySteps = [
     {
-      step: 'Ketua Pusat Pengajian IPSIS-FSG',
+      step: 'Ketua Pusat Pengajian FSG',
       timestamp: "2024-09-22T08:00:00Z",
       description: "3 Hari Bekerja",
       status: null,
@@ -35,17 +35,17 @@ const Order = () => {
       description: "5 Hari Bekerja",
       status: null,
     },
-    {
-      step: 'Pelawaan Vendor',
-      timestamp: null,
-      description: "2 Bulan",
-      status: null,
-    },
+    // {
+    //   step: 'Pelawaan Vendor',
+    //   timestamp: null,
+    //   description: "2 Bulan",
+    //   status: null,
+    // },
     {
       step: 'Kutipan',
       status: "finish",
       timestamp: null,
-      description: null,
+      description: "5 Hari Bekerja",
     },
     {
       step: 'Selesai',
@@ -151,7 +151,7 @@ const Order = () => {
     const payload = {
       data: {
         is_received: true,
-        current_step: 5,
+        current_step: 4,
         current_step_status: "finish"
       }
     }
@@ -207,8 +207,8 @@ const Order = () => {
       render: (text, record) => {
         const { current_step, current_step_status, rating, is_received } = record;
 
-        const isKutipanFinish = current_step === 4 && current_step_status === 'process' && !is_received
-        const isSelesaiFinish = current_step === 5 && current_step_status === 'finish' && !rating
+        const isKutipanFinish = current_step === 3 && current_step_status === 'process' && !is_received
+        const isSelesaiFinish = current_step === 4 && current_step_status === 'finish' && !rating
 
         return [
           <Button type="primary" onClick={() => showFormModal(record)} key="viewForm">
@@ -227,7 +227,7 @@ const Order = () => {
               Rate
             </Button>
           ),
-          current_step !== 5 && (
+          current_step !== 4 && (
             <Button danger onClick={() => deleteOrder(record.id)}>
               Cancel
             </Button>

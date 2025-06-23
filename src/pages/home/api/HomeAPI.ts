@@ -2,6 +2,7 @@
 
 import axios from "axios";
 import Cookies from "js-cookie";
+import { apiRequest } from "../../../utils/API";
 
 // Function to handle the file upload API call with the required JSON structure
 export const submitOrderForm = async (title: string, file: File) => {
@@ -36,3 +37,7 @@ export const submitOrderForm = async (title: string, file: File) => {
   }
 };
 
+
+export const getGoogleDriveLink = async () => {
+  return await apiRequest<any>("GET", "/api/gd-link");
+}
