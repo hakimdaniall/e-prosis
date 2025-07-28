@@ -20,7 +20,7 @@ const AdminUpdate = () => {
   const initialDeliverySteps = [
     { step: 'Ketua Pusat Pengajian FSG', description: '3 Hari Bekerja', status: null },
     { step: 'Pegawai Perolehan', description: '5 Hari Bekerja', status: null },
-    // { step: 'Pelawaan Vendor', description: '2 Bulan', status: null },
+    { step: 'Proses Perolehan Sistem EP', description: '2 Bulan', status: null },
     { step: 'Kutipan', description: "5 Hari Bekerja", status: null },
     { step: 'Selesai', description: null, status: null },
   ];
